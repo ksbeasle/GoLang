@@ -1,0 +1,64 @@
+{
+    "Customers": [
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "Bob",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        },
+        {
+            "name": "john",
+            "age": 22,
+            "email": "john@gmail.com",
+            "address": "123 west street"
+        }
+    ]
+}
