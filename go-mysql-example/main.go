@@ -21,7 +21,7 @@ func main() {
 	defer db.Close()
 
 	//INSERT into db
-	insert, err := db.Query("INSERT INTO test.user VALUES (2, 'gromm')")
+	insert, err := db.Query("INSERT INTO test.user VALUES (4, 'grom4m')")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -33,8 +33,6 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Println(res)
-	fmt.Println(err)
 	for res.Next() {
 		var e example
 		err = res.Scan(&e.ID, &e.Name)
@@ -43,4 +41,14 @@ func main() {
 		}
 		fmt.Println(e.Name)
 	}
+
+	//SELECT SINGLE ROW
+	var e example
+	err = db.QueryRow("SELECT ID, Name from user WHERE ID = ?", 2).Scan(&e.ID, &e.Name)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println("------------")
+	fmt.Println(e.ID)
+	fmt.Println(e.Name)
 }
