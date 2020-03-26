@@ -21,7 +21,7 @@ func main() {
 	defer db.Close()
 
 	//INSERT into db
-	insert, err := db.Query("INSERT INTO user VALUES (2 `gromm`)")
+	insert, err := db.Query("INSERT INTO test.user VALUES (2, 'gromm')")
 	if err != nil {
 		panic(err.Error())
 	}
