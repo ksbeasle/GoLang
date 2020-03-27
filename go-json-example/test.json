@@ -1,0 +1,28 @@
+{
+    "Objects": [
+        {
+            "topic": "a",
+            "inner": {
+                "inside1": 1,
+                "inside2": 2,
+                "inside3": 3
+            }
+        },
+        {
+            "topic": "b",
+            "inner": {
+                "inside1": 1,
+                "inside2": 2,
+                "inside3": 3
+            }
+        },
+        {
+            "topic": "c",
+            "inner": {
+                "inside1": 1,
+                "inside2": 2,
+                "inside3": 3
+            }
+        }
+    ]
+}
