@@ -1,7 +1,7 @@
 # Base Image
 # Go App - Version go1.13.8 darwin/amd64
-FROM golang:1.12.0-alpine3.9
-
+#FROM golang:1.12.0-alpine3.9
+FROM golang:1.13.8
 # Make an app directory to hold src files 
 RUN mkdir /app
 
