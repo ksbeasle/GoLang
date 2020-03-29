@@ -13,7 +13,6 @@ type example struct {
 }
 
 func main() {
-	//TODO: apparently theres no password for 'root' I should fix that
 	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/test")
 	if err != nil {
 		panic(err.Error())
