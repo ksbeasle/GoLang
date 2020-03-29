@@ -23,3 +23,4 @@ CMD ["/app/main"]
 # docker build -t go-docker-example .
 # docker images
 # docker run -p 7070:7071 -it go-docker-example
+# Docker image runs but unable to reach it at localhost:7070
