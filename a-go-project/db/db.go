@@ -2,17 +2,23 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
+	"log"
 	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func initDB() {
+var db *sql.DB
+
+func InitDB() {
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
 	port := os.Getenv("PORT")
-	database := os.Getenv("GO_DB")
-	db, err := sql.Open("mysql", "user:password@tcp(localhost:port)/database")
+	dbConnectionString := fmt.Sprintf("%s:%s@tcp(localhost:%s)/test", user, password, port)
+	db, err := sql.Open("mysql", dbConnectionString)
 	if err != nil {
 		panic(err.Error())
 	}
-
+	log.Println(db.Ping())
 }
