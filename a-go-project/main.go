@@ -4,7 +4,6 @@ import (
 	"a-go-project/db"
 	"a-go-project/models"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -28,7 +27,14 @@ func main() {
 	json.Unmarshal(jsonToByteArray, &cs)
 
 	for i := 0; i < len(cs.Customers); i++ {
-		fmt.Println(cs.Customers[i])
+		var newCustomer models.Customer
+
+		newCustomer.Name = cs.Customers[i].Name
+		newCustomer.Address = cs.Customers[i].Address
+		newCustomer.Age = cs.Customers[i].Age
+		newCustomer.Email = cs.Customers[i].Email
+
+		//INSERT here or somewhere else?
 	}
 
 }
