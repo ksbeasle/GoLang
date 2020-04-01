@@ -32,7 +32,7 @@ func InsertCustomer(c models.Customer) models.Customer {
 		panic(err.Error())
 	}
 
-	_, err := stmt.Exec(c.Name, c.Age, c.Email, c.Address)
+	_, err = stmt.Exec(c.Name, c.Age, c.Email, c.Address)
 	if err != nil {
 		panic(err.Error())
 	}
