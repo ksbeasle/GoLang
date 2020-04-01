@@ -34,7 +34,7 @@ func main() {
 		newCustomer.Age = cs.Customers[i].Age
 		newCustomer.Email = cs.Customers[i].Email
 
-		//INSERT here or somewhere else?
+		db.InsertCustomer(newCustomer)
 	}
 
 }
