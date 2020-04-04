@@ -34,7 +34,15 @@ func main() {
 		newCustomer.Age = cs.Customers[i].Age
 		newCustomer.Email = cs.Customers[i].Email
 		//fmt.Println(newCustomer)
-		db.InsertCustomer(newCustomer)
+		//db.InsertCustomer(newCustomer)
 	}
+	var c models.Customer
+	c.Name = "foo"
+	c.Address = "999 west"
+	c.Age = 99
+	c.Email = "bar@gmail.com"
+
+	//db.InsertCustomer(c)
+	db.GetAllCustomers()
 
 }
