@@ -56,7 +56,7 @@ func GetAllCustomers() []models.Customer {
 	}
 
 	var customersList []models.Customer
-	rows, err := db.Query("SELECT * FROM test.customer")
+	rows, err := db.Query("SELECT Name, Age, Email, Address FROM test.customer")
 	if err != nil {
 		panic(err.Error())
 	}
