@@ -43,10 +43,11 @@ func InsertCustomer(c models.Customer) {
 		panic(err.Error())
 	}
 	defer stmt.Close()
+	defer db.Close()
 
 }
 
-func GetAllCustomers() {
+func GetAllCustomers() []models.Customer {
 	log.Println("GETTING ALL CUSTOMERS ...")
 
 	db, err := sql.Open("mysql", dbConnectionString)
@@ -54,14 +55,24 @@ func GetAllCustomers() {
 		panic(err.Error())
 	}
 
-	stmt, err := db.Prepare(`SELECT * FROM test.customer`)
+	var customersList []models.Customer
+	rows, err := db.Query("SELECT * FROM test.customer")
 	if err != nil {
 		panic(err.Error())
 	}
-
-	_, err = stmt.Exec()
-	if err != nil {
-		panic(err.Error())
+	var Name string
+	var Age int
+	var Email string
+	var Address string
+	//TODO: ERROR BELOW
+	//panic: sql: expected 5 destination arguments in Scan, not 4
+	for rows.Next() {
+		err := rows.Scan(&Name, &Age, &Email, &Address)
+		if err != nil {
+			panic(err.Error())
+		}
+		customersList = append(customersList, models.Customer{Name: Name, Age: Age, Email: Email, Address: Address})
 	}
-
+	defer db.Close()
+	return customersList
 }

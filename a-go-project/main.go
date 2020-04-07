@@ -4,6 +4,7 @@ import (
 	"a-go-project/db"
 	"a-go-project/models"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -43,6 +44,8 @@ func main() {
 	c.Email = "bar@gmail.com"
 
 	//db.InsertCustomer(c)
-	db.GetAllCustomers()
+	db.InitDB()
+	fmt.Println(db.GetAllCustomers())
 
+	//TODO: Eventually some endpoints that will handle the db queries ...
 }
