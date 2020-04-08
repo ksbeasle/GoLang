@@ -18,11 +18,17 @@ var dbConnectionString string
 
 //TODO: Custom error for query maybe
 
-func InitDB() {
+func InitDB() (db *sql.DB) {
 	user = os.Getenv("DB_USER")
 	password = os.Getenv("DB_PASSWORD")
 	port = os.Getenv("PORT")
 	dbConnectionString = fmt.Sprintf("%s:%s@tcp(localhost:%s)/test", user, password, port)
+
+	db, err := sql.Open("mysql", dbConnectionString)
+	if err != nil {
+		panic(err.Error())
+	}
+	return db
 }
 
 func InsertCustomer(c models.Customer) {
@@ -43,7 +49,6 @@ func InsertCustomer(c models.Customer) {
 		panic(err.Error())
 	}
 	defer stmt.Close()
-	defer db.Close()
 
 }
 
@@ -64,8 +69,6 @@ func GetAllCustomers() []models.Customer {
 	var Age int
 	var Email string
 	var Address string
-	//TODO: ERROR BELOW
-	//panic: sql: expected 5 destination arguments in Scan, not 4
 	for rows.Next() {
 		err := rows.Scan(&Name, &Age, &Email, &Address)
 		if err != nil {
@@ -73,6 +76,48 @@ func GetAllCustomers() []models.Customer {
 		}
 		customersList = append(customersList, models.Customer{Name: Name, Age: Age, Email: Email, Address: Address})
 	}
-	defer db.Close()
+
 	return customersList
+}
+
+func GetSpecificCustomer(email string) models.Customer {
+	log.Println("GETTING DATA FROM SPECIFIC CUSTOMER ... ")
+	var c models.Customer
+	db, err := sql.Open("mysql", dbConnectionString)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	rows := db.QueryRow("SELECT Name, Age, Email, Address from test.customer WHERE Email=?", email)
+	var Name string
+	var Age int
+	var Email string
+	var Address string
+	err = rows.Scan(&Name, &Age, &Email, &Address)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("No customer with that email address ...")
+			panic(err.Error())
+		} else {
+			panic(err.Error())
+		}
+	}
+	c = models.Customer{Name: Name, Age: Age, Email: Email, Address: Address}
+
+	return c
+}
+
+func RemoveSpecificCustomer(email string) {
+	log.Println("DELETING RECORD ... ")
+	db, err := sql.Open("mysql", dbConnectionString)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	_, err = db.Query("DELETE FROM test.customer WHERE Email = ?", email)
+	if err != nil {
+		log.Println("NO RECORD FOUND ... ")
+		panic(err.Error())
+	}
+
 }

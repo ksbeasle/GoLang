@@ -44,8 +44,12 @@ func main() {
 	c.Email = "bar@gmail.com"
 
 	//db.InsertCustomer(c)
-	db.InitDB()
+	//db.InitDB()
 	fmt.Println(db.GetAllCustomers())
 
+	//db.InitDB()
+	fmt.Println(db.GetSpecificCustomer("morgan@gmail.com"))
+
+	db.RemoveSpecificCustomer("bar@gmail.com")
 	//TODO: Eventually some endpoints that will handle the db queries ...
 }
