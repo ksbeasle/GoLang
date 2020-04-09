@@ -121,3 +121,15 @@ func RemoveSpecificCustomer(email string) {
 	}
 
 }
+
+//Clear table(s)
+func GiveMeDeath() string {
+	log.Println("GOODBYE ... ")
+	return "... DB FLATLINE ..."
+}
+
+//Create tables and insert data into them
+func GiveMeLife() string {
+	log.Println("HELLO ... ")
+	return "... DB ONLINE ... "
+}

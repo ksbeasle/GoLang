@@ -6,7 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 )
 
 type Customers struct {
@@ -52,4 +56,13 @@ func main() {
 
 	db.RemoveSpecificCustomer("bar@gmail.com")
 	//TODO: Eventually some endpoints that will handle the db queries ...
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/", index)
+	log.Fatal(http.ListenAndServe(":8080", router))
+
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "... ROOT ... ")
+
 }
