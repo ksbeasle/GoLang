@@ -19,6 +19,7 @@ type person struct {
 
 type allPeople []person
 
+//at least one in the array
 var people = allPeople{
 	{
 		Id:   "1",
@@ -36,10 +37,17 @@ func createPerson(w http.ResponseWriter, r *http.Request) {
 	var newPerson person
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "")
+		return
 	}
 
-	json.Unmarshal(reqBody, &newPerson)
+	err = json.Unmarshal(reqBody, &newPerson)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Invalid JSON")
+		return
+	}
 	people = append(people, newPerson)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newPerson)
@@ -52,6 +60,9 @@ func getOnePerson(w http.ResponseWriter, r *http.Request) {
 	for _, person := range people {
 		if person.Id == personID {
 			json.NewEncoder(w).Encode(person)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "No Record found with that ID")
 		}
 	}
 }
@@ -66,15 +77,25 @@ func updatePerson(w http.ResponseWriter, r *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Fprintf(w, "invalid data.")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "")
+		return
 	}
-	json.Unmarshal(reqBody, &updatedPerson)
+	err = json.Unmarshal(reqBody, &updatedPerson)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Invalid JSON")
+		return
+	}
 	for i, person := range people {
 		if person.Id == PersonID {
 			person.Age = updatedPerson.Age
 			person.Name = updatedPerson.Name
 			people = append(people[:i], person)
 			json.NewEncoder(w).Encode(person)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "No Record found with that ID")
 		}
 	}
 }
@@ -86,6 +107,9 @@ func removePerson(w http.ResponseWriter, r *http.Request) {
 		if personId == person.Id {
 			people = append(people[:i], people[i+1:]...)
 			fmt.Fprintf(w, "%v was removed", personId)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "No Record found with that ID")
 		}
 	}
 }
