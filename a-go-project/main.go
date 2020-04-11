@@ -38,8 +38,8 @@ func main() {
 		newCustomer.Address = cs.Customers[i].Address
 		newCustomer.Age = cs.Customers[i].Age
 		newCustomer.Email = cs.Customers[i].Email
-		//fmt.Println(newCustomer)
-		//db.InsertCustomer(newCustomer)
+		// fmt.Println(newCustomer)
+		// db.InsertCustomer(newCustomer)
 	}
 	var c models.Customer
 	c.Name = "foo"
@@ -47,15 +47,23 @@ func main() {
 	c.Age = 99
 	c.Email = "bar@gmail.com"
 
-	db.GiveMeLife()
-
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", index)
+	router.HandleFunc("/allCustomers", ShowMeEveryone)
 	log.Fatal(http.ListenAndServe(":8080", router))
 
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "... ROOT ... ")
+	fmt.Fprintf(w, `
+	
+	`)
 
+}
+
+func ShowMeEveryone(w http.ResponseWriter, r *http.Request) {
+	var arr []models.Customer = db.GetAllCustomers()
+	for _, p := range arr {
+		fmt.Fprint(w, p)
+	}
 }

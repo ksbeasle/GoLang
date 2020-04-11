@@ -16,8 +16,8 @@ var password string
 var port string
 var dbConnectionString string
 
-//TODO: Custom error for query maybe
-
+//TODO: Custom error for query
+//TODO: transaction maybe
 func InitDB() (db *sql.DB) {
 	user = os.Getenv("DB_USER")
 	password = os.Getenv("DB_PASSWORD")
@@ -52,7 +52,7 @@ func InsertCustomer(c models.Customer) {
 
 }
 
-func GetAllCustomers() ([]models.Customer, error) {
+func GetAllCustomers() []models.Customer {
 	log.Println("GETTING ALL CUSTOMERS ...")
 
 	db, err := sql.Open("mysql", dbConnectionString)
@@ -61,23 +61,26 @@ func GetAllCustomers() ([]models.Customer, error) {
 	}
 
 	var customersList []models.Customer
-	rows, err := db.Query("SELECT Name, Age, Email, Address FROM test.customer")
-	if err != nil {
-		return nil, sql.ErrNoRows
-	}
+	rows, _ := db.Query("SELECT Name, Age, Email, Address FROM test.customer")
+
 	var Name string
 	var Age int
 	var Email string
 	var Address string
 	for rows.Next() {
 		err := rows.Scan(&Name, &Age, &Email, &Address)
-		if err != nil {
-			panic(err.Error())
+
+		if err = rows.Err(); err != nil {
+			//sql.Errnorows?
 		}
 		customersList = append(customersList, models.Customer{Name: Name, Age: Age, Email: Email, Address: Address})
 	}
-
-	return customersList, nil
+	err = rows.Close()
+	if err = rows.Close(); err != nil {
+		log.Println(err)
+	}
+	log.Println("ALL CUSTOMERS RETRIEVED")
+	return customersList
 }
 
 func GetSpecificCustomer(email string) models.Customer {
