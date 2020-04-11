@@ -41,18 +41,18 @@ func InsertCustomer(c models.Customer) {
 
 	stmt, err := db.Prepare("INSERT INTO test.customer (Name, Age, Email, Address) VALUES(?, ?, ?, ?)")
 	if err != nil {
-		panic(err.Error())
+		return
 	}
 
 	_, err = stmt.Exec(c.Name, c.Age, c.Email, c.Address)
 	if err != nil {
-		panic(err.Error())
+		return
 	}
 	defer stmt.Close()
 
 }
 
-func GetAllCustomers() []models.Customer {
+func GetAllCustomers() ([]models.Customer, error) {
 	log.Println("GETTING ALL CUSTOMERS ...")
 
 	db, err := sql.Open("mysql", dbConnectionString)
@@ -63,7 +63,7 @@ func GetAllCustomers() []models.Customer {
 	var customersList []models.Customer
 	rows, err := db.Query("SELECT Name, Age, Email, Address FROM test.customer")
 	if err != nil {
-		panic(err.Error())
+		return nil, sql.ErrNoRows
 	}
 	var Name string
 	var Age int
@@ -77,7 +77,7 @@ func GetAllCustomers() []models.Customer {
 		customersList = append(customersList, models.Customer{Name: Name, Age: Age, Email: Email, Address: Address})
 	}
 
-	return customersList
+	return customersList, nil
 }
 
 func GetSpecificCustomer(email string) models.Customer {
@@ -94,6 +94,8 @@ func GetSpecificCustomer(email string) models.Customer {
 	var Email string
 	var Address string
 	err = rows.Scan(&Name, &Age, &Email, &Address)
+	//TODO: move this up to get all customers as well
+	//TODO: add better errors
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("No customer with that email address ...")
@@ -125,11 +127,14 @@ func RemoveSpecificCustomer(email string) {
 //Clear table(s)
 func GiveMeDeath() string {
 	log.Println("GOODBYE ... ")
-	return "... DB FLATLINE ..."
-}
+	db, err := sql.Open("mysql", dbConnectionString)
+	if err != nil {
+		panic(err.Error())
+	}
+	_, err = db.Query("DROP TABLE customer")
+	if err != nil {
+		panic(err.Error())
+	}
 
-//Create tables and insert data into them
-func GiveMeLife() string {
-	log.Println("HELLO ... ")
-	return "... DB ONLINE ... "
+	return "... DB FLATLINE ..."
 }

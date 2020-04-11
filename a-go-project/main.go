@@ -47,15 +47,8 @@ func main() {
 	c.Age = 99
 	c.Email = "bar@gmail.com"
 
-	//db.InsertCustomer(c)
-	//db.InitDB()
-	fmt.Println(db.GetAllCustomers())
+	db.GiveMeLife()
 
-	//db.InitDB()
-	fmt.Println(db.GetSpecificCustomer("morgan@gmail.com"))
-
-	db.RemoveSpecificCustomer("bar@gmail.com")
-	//TODO: Eventually some endpoints that will handle the db queries ...
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", index)
 	log.Fatal(http.ListenAndServe(":8080", router))
