@@ -52,7 +52,7 @@ func InsertCustomer(c models.Customer) {
 
 }
 
-func GetAllCustomers() []models.Customer {
+func GetAllCustomers(db *sql.DB) []models.Customer {
 	log.Println("GETTING ALL CUSTOMERS ...")
 
 	db, err := sql.Open("mysql", dbConnectionString)
@@ -83,20 +83,16 @@ func GetAllCustomers() []models.Customer {
 	return customersList
 }
 
-func GetSpecificCustomer(email string) models.Customer {
+func GetSpecificCustomer(db *sql.DB, email string) models.Customer {
 	log.Println("GETTING DATA FROM SPECIFIC CUSTOMER ... ")
 	var c models.Customer
-	db, err := sql.Open("mysql", dbConnectionString)
-	if err != nil {
-		panic(err.Error())
-	}
 
-	rows := db.QueryRow("SELECT Name, Age, Email, Address from test.customer WHERE Email=?", email)
+	rows := db.QueryRow("SELECT Name, Age, Email, Address FROM test.customer WHERE Email=?", email)
 	var Name string
 	var Age int
 	var Email string
 	var Address string
-	err = rows.Scan(&Name, &Age, &Email, &Address)
+	err := rows.Scan(&Name, &Age, &Email, &Address)
 	//TODO: move this up to get all customers as well
 	//TODO: add better errors
 	if err != nil {

@@ -18,7 +18,6 @@ type Customers struct {
 }
 
 func main() {
-	db.InitDB()
 
 	f, err := os.Open("input.json")
 	if err != nil {
@@ -49,7 +48,8 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", index)
-	router.HandleFunc("/allCustomers", ShowMeEveryone)
+	router.HandleFunc("/allCustomers", ShowMeEveryone).Methods("GET")
+	router.HandleFunc("/customer/{email}", GetOneCustomer).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8080", router))
 
 }
@@ -62,8 +62,15 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func ShowMeEveryone(w http.ResponseWriter, r *http.Request) {
-	var arr []models.Customer = db.GetAllCustomers()
+	d := db.InitDB()
+	var arr []models.Customer = db.GetAllCustomers(d)
 	for _, p := range arr {
 		fmt.Fprint(w, p)
 	}
+}
+func GetOneCustomer(w http.ResponseWriter, r *http.Request) {
+	d := db.InitDB()
+	customerEmail := mux.Vars(r)["email"]
+	var c models.Customer = db.GetSpecificCustomer(d, customerEmail)
+	fmt.Fprint(w, c)
 }

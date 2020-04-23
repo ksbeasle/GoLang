@@ -21,9 +21,9 @@ func TestGetSpecificCustomer(t *testing.T) {
 		AddRow("test2", 2, "test2@mail.com", "test234").
 		AddRow("test3", 3, "test3@mail.com", "test345")
 
-	mock.ExpectQuery("^SELECT (.+) FROM test.customer*").WithArgs("test2@mail.com").WillReturnRows(rows)
+	mock.ExpectQuery("SELECT (.+) FROM test.customer").WithArgs("test2@mail.com").WillReturnRows(rows)
 
-	customer := GetSpecificCustomer("test2@mail.com")
+	customer := GetSpecificCustomer(db, "test2@mail.com")
 
 	//expected result
 	var specificCustomer []models.Customer
