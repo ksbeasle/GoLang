@@ -16,7 +16,6 @@ var password string
 var port string
 var dbConnectionString string
 
-//TODO: Custom error for query
 //TODO: transaction maybe
 func InitDB() (db *sql.DB) {
 	user = os.Getenv("DB_USER")
@@ -31,27 +30,33 @@ func InitDB() (db *sql.DB) {
 	return db
 }
 
-func InsertCustomer(c models.Customer) {
+func InsertCustomer(db *sql.DB, c models.Customer) error {
 	log.Println("INSERTING ...")
-
-	db, err := sql.Open("mysql", dbConnectionString)
-	if err != nil {
-		panic(err.Error())
-	}
 
 	stmt, err := db.Prepare("INSERT INTO test.customer (Name, Age, Email, Address) VALUES(?, ?, ?, ?)")
 	if err != nil {
-		return
+		return err
 	}
 
 	_, err = stmt.Exec(c.Name, c.Age, c.Email, c.Address)
 	if err != nil {
-		return
+		return err
 	}
 	defer stmt.Close()
+	log.Printf("CUSTOMER %s SUCCESSFULLY ADDED ...", c.Email)
+	return nil
 
 }
 
+func UpdateCustomer(db *sql.DB, email string) (string, error) {
+	log.Println("ATTEMPTING TO UPDATE CUSTOMER -- ", email)
+	isPresent, err := GetSpecificCustomer(db, email)
+	if err != nil {
+		log.Println("ERROR FROM GETSPECIFICCUSTOMER()", err)
+	}
+	fmt.Println(isPresent)
+	return "", nil
+}
 func GetAllCustomers(db *sql.DB) []models.Customer {
 	log.Println("GETTING ALL CUSTOMERS ...")
 
@@ -70,8 +75,13 @@ func GetAllCustomers(db *sql.DB) []models.Customer {
 	for rows.Next() {
 		err := rows.Scan(&Name, &Age, &Email, &Address)
 
-		if err = rows.Err(); err != nil {
-			//sql.Errnorows?
+		if err != nil {
+			if err == sql.ErrNoRows {
+				log.Println("No customer with that email address ...")
+				log.Println("Error No Rows")
+			} else {
+				panic(err.Error())
+			}
 		}
 		customersList = append(customersList, models.Customer{Name: Name, Age: Age, Email: Email, Address: Address})
 	}
@@ -83,7 +93,7 @@ func GetAllCustomers(db *sql.DB) []models.Customer {
 	return customersList
 }
 
-func GetSpecificCustomer(db *sql.DB, email string) models.Customer {
+func GetSpecificCustomer(db *sql.DB, email string) (models.Customer, error) {
 	log.Println("GETTING DATA FROM SPECIFIC CUSTOMER ... ")
 	var c models.Customer
 
@@ -93,19 +103,18 @@ func GetSpecificCustomer(db *sql.DB, email string) models.Customer {
 	var Email string
 	var Address string
 	err := rows.Scan(&Name, &Age, &Email, &Address)
-	//TODO: move this up to get all customers as well
-	//TODO: add better errors
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("No customer with that email address ...")
-			panic(err.Error())
+			log.Println("Error No Rows")
+			return c, err
 		} else {
 			panic(err.Error())
 		}
 	}
 	c = models.Customer{Name: Name, Age: Age, Email: Email, Address: Address}
-
-	return c
+	log.Printf("RECORD FOR %s SUCCESSFULLY RETRIEVED ...", c.Email)
+	return c, nil
 }
 
 func RemoveSpecificCustomer(email string) {
@@ -120,6 +129,7 @@ func RemoveSpecificCustomer(email string) {
 		log.Println("NO RECORD FOUND ... ")
 		panic(err.Error())
 	}
+	log.Printf("RECORD FOR %s SUCCESSFULLY DELETED ...", email)
 
 }
 
