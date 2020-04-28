@@ -3,6 +3,7 @@ package main
 import (
 	"a-go-project/db"
 	"a-go-project/models"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,38 +14,45 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var d *sql.DB = db.InitDB()
+
 type Customers struct {
 	Customers []models.Customer `json:"Customers"`
 }
 
-func main() {
-
+func InsertData() error {
 	f, err := os.Open("input.json")
 	if err != nil {
-		panic(err.Error())
+		log.Println("ERROR WHILE READING FILE ...")
+		return err
 	}
 	jsonToByteArray, err := ioutil.ReadAll(f)
 	if err != nil {
-		panic(err.Error())
+		log.Println("ERROR WHILE UNMARSHALLING JSON ...")
+		return err
 	}
+
 	var cs Customers
 	json.Unmarshal(jsonToByteArray, &cs)
-
 	for i := 0; i < len(cs.Customers); i++ {
-		var newCustomer models.Customer
-
+		newCustomer := models.Customer{}
 		newCustomer.Name = cs.Customers[i].Name
 		newCustomer.Address = cs.Customers[i].Address
 		newCustomer.Age = cs.Customers[i].Age
 		newCustomer.Email = cs.Customers[i].Email
-		// fmt.Println(newCustomer)
-		// db.InsertCustomer(newCustomer)
+		err := db.InsertCustomer(d, newCustomer)
+		if err != nil {
+			log.Println("ERROR INSERTING CUSTOMER ... ")
+			return err
+		}
 	}
-	var c models.Customer
-	c.Name = "foo"
-	c.Address = "999 west"
-	c.Age = 99
-	c.Email = "bar@gmail.com"
+	return nil
+}
+func main() {
+	//Clear table
+	db.GiveMeDeath()
+	//Insert data
+	InsertData()
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", index)
@@ -59,13 +67,11 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `
-	
+		<h1>Test</h1>
 	`)
-
 }
 func add(w http.ResponseWriter, r *http.Request) {
 	var c models.Customer
-	d := db.InitDB()
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -87,14 +93,12 @@ func add(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 func ShowMeEveryone(w http.ResponseWriter, r *http.Request) {
-	d := db.InitDB()
 	var arr []models.Customer = db.GetAllCustomers(d)
 	for _, p := range arr {
 		fmt.Fprint(w, p)
 	}
 }
 func GetOneCustomer(w http.ResponseWriter, r *http.Request) {
-	d := db.InitDB()
 	customerEmail := mux.Vars(r)["email"]
 	c, err := db.GetSpecificCustomer(d, customerEmail)
 	if err != nil {
@@ -104,7 +108,6 @@ func GetOneCustomer(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
-	db.InitDB()
 	customerEmail := mux.Vars(r)["email"]
 	db.RemoveSpecificCustomer(customerEmail)
 }

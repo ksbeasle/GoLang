@@ -10,7 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
+var db *sql.DB = InitDB()
 var user string
 var password string
 var port string
@@ -52,7 +52,7 @@ func UpdateCustomer(db *sql.DB, email string) (string, error) {
 	log.Println("ATTEMPTING TO UPDATE CUSTOMER -- ", email)
 	isPresent, err := GetSpecificCustomer(db, email)
 	if err != nil {
-		log.Println("ERROR FROM GETSPECIFICCUSTOMER()", err)
+		log.Println("CUSTOMER DOES NOT EXIST ...", err)
 	}
 	fmt.Println(isPresent)
 	return "", nil
@@ -133,17 +133,12 @@ func RemoveSpecificCustomer(email string) {
 
 }
 
-//Clear table(s)
-func GiveMeDeath() string {
-	log.Println("GOODBYE ... ")
-	db, err := sql.Open("mysql", dbConnectionString)
+//Clear table
+func GiveMeDeath() {
+	log.Println("CLEARING TABLE ... ")
+	_, err := db.Query("TRUNCATE TABLE test.customer")
 	if err != nil {
 		panic(err.Error())
 	}
-	_, err = db.Query("DROP TABLE customer")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return "... DB FLATLINE ..."
+	log.Println("TABLE CLEARED SUCCESSFULLY ...")
 }

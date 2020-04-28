@@ -18,8 +18,8 @@ func TestGetSpecificCustomer(t *testing.T) {
 	defer db.Close()
 	cols := []string{"Name", "Age", "Email", "Address"}
 
-	/* NOTE: TEST FAILS USING THIS WAY FOR SOME REASON, IT ALWAYS RETURNS THE FIRST ENTRY AND 
-			 NEVER REALLY LOOKS FOR THAT SECOND ENTRY, DON'T KNOW WHY.
+	/* NOTE: TEST FAILS USING THIS WAY FOR SOME REASON, IT ALWAYS RETURNS THE FIRST ENTRY AND
+	NEVER REALLY LOOKS FOR THAT SECOND ENTRY, DON'T KNOW WHY.
 	*/
 	// rows := sqlmock.NewRows(cols).
 	// 	AddRow("test1", 1, "test1@mail.com", "test123").
@@ -29,11 +29,11 @@ func TestGetSpecificCustomer(t *testing.T) {
 
 	//This works though.
 	mock.ExpectQuery(`SELECT Name, Age, Email, Address FROM test.customer WHERE Email=?`).
-	WithArgs("test2@mail.com").
-	WillReturnRows(mock.NewRows(cols).
-	AddRow("test2", 2, "test2@mail.com", "test234"))
+		WithArgs("test2@mail.com").
+		WillReturnRows(mock.NewRows(cols).
+			AddRow("test2", 2, "test2@mail.com", "test234"))
 
-	customer := GetSpecificCustomer(db, "test2@mail.com")
+	customer, _ := GetSpecificCustomer(db, "test2@mail.com")
 
 	expectedCustomer := models.Customer{
 		Name:    "test2",
