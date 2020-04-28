@@ -113,5 +113,30 @@ func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateCustomer(w http.ResponseWriter, r *http.Request) {
+	customerEmail := mux.Vars(r)["email"]
 
+	var c models.Customer
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = json.Unmarshal(reqBody, &c)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Invalid JSON")
+		log.Println(err)
+		return
+	}
+
+	if c.Email != customerEmail {
+		fmt.Fprintf(w, "CUSTOMER DOES NOT EXIST ...")
+		log.Println("CUSTOMER DOES NOT EXIST ...")
+		return
+	}
+
+	rowsAffected, _ := db.UpdateCustomer(d, c)
+	fmt.Fprintf(w, "CUSTOMER %s SUCCESSFULLY UPDATED ...", c.Email)
+	log.Println(rowsAffected)
 }

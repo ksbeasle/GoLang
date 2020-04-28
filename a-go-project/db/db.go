@@ -48,14 +48,15 @@ func InsertCustomer(db *sql.DB, c models.Customer) error {
 
 }
 
-func UpdateCustomer(db *sql.DB, email string) (string, error) {
-	log.Println("ATTEMPTING TO UPDATE CUSTOMER -- ", email)
-	isPresent, err := GetSpecificCustomer(db, email)
+func UpdateCustomer(db *sql.DB, c models.Customer) (int64, error) {
+	log.Println("ATTEMPTING TO UPDATE CUSTOMER -- ", c.Email)
+	_, err := GetSpecificCustomer(db, c.Email)
 	if err != nil {
 		log.Println("CUSTOMER DOES NOT EXIST ...", err)
 	}
-	fmt.Println(isPresent)
-	return "", nil
+
+	result, err := db.Exec("UPDATE test.customer SET Name = ?, Email = ?,Age = ?, Address = ? WHERE Email = ?", c.Name, c.Email, c.Age, c.Address, c.Email)
+	return result.RowsAffected()
 }
 func GetAllCustomers(db *sql.DB) []models.Customer {
 	log.Println("GETTING ALL CUSTOMERS ...")
