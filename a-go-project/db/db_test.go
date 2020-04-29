@@ -17,17 +17,6 @@ func TestGetSpecificCustomer(t *testing.T) {
 	}
 	defer db.Close()
 	cols := []string{"Name", "Age", "Email", "Address"}
-
-	/* NOTE: TEST FAILS USING THIS WAY FOR SOME REASON, IT ALWAYS RETURNS THE FIRST ENTRY AND
-	NEVER REALLY LOOKS FOR THAT SECOND ENTRY, DON'T KNOW WHY.
-	*/
-	// rows := sqlmock.NewRows(cols).
-	// 	AddRow("test1", 1, "test1@mail.com", "test123").
-	// 	AddRow("test2", 2, "test2@mail.com", "test234").
-	// 	AddRow("test3", 3, "test3@mail.com", "test345")
-	// mock.ExpectQuery("^SELECT (.+) FROM test.customers*").WithArgs("test2@mail.com").WillReturnRows(rows)
-
-	//This works though.
 	mock.ExpectQuery(`SELECT Name, Age, Email, Address FROM test.customer WHERE Email=?`).
 		WithArgs("test2@mail.com").
 		WillReturnRows(mock.NewRows(cols).

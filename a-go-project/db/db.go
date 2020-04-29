@@ -16,7 +16,6 @@ var password string
 var port string
 var dbConnectionString string
 
-//TODO: transaction maybe
 func InitDB() (db *sql.DB) {
 	user = os.Getenv("DB_USER")
 	password = os.Getenv("DB_PASSWORD")
