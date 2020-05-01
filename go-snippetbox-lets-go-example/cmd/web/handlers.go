@@ -2,18 +2,18 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"html/template"
+	"net/http"
 	"strconv"
-	"log"
 )
 
 //http://localhost:8080/snippet?id=123
 
-func home(w http.ResponseWriter, r *http.Request) {
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	//this will prevent the slash catching all requests
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		//http.NotFound(w, r)
+		app.NotFound(w)
 		return
 	}
 	files := []string{
@@ -23,35 +23,42 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		//using application error log instead of the default log
+		//app.errorLog.Println(err.Error())
+		app.ServerError(w, err)
+		//http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	err = ts.Execute(w,nil)
+	err = ts.Execute(w, nil)
 	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		//app.errorLog.Println(err.Error())
+		//http.Error(w, "Internal server error", http.StatusInternalServerError)
+		app.ServerError(w, err)
 	}
 }
 
-func showSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
-		http.Error(w, "Invalid ID", http.StatusNotFound)
+		//app.errorLog.Println(err.Error())
+		//http.Error(w, "Invalid ID", http.StatusNotFound)
 		//http.NotFound(w,r)
+		app.NotFound(w)
 		return
 	}
 	fmt.Fprintf(w, "Id = %d", id)
 }
 
-func createSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	//Allow only POST method to be used per HTTP good practices
 	if r.Method != http.MethodPost {
 		//Let user know what Methods are accepted at the endpoint
 		w.Header().Set("Allow", http.MethodPost)
+		app.ClientError(w, http.StatusMethodNotAllowed)
+		//app.errorLog.Println(http.StatusMethodNotAllowed)
 		//405
-		http.Error(w, "Method Now allowed", http.StatusMethodNotAllowed)
+		//http.Error(w, "Method Now allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	w.Write([]byte("Create a snippet"))
