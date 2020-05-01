@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"ksbeasle.net/snippetbox/pkg/models/mysql"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -14,6 +16,7 @@ import (
 type application struct {
 	InfoLog  *log.Logger
 	errorLog *log.Logger
+	snippets *mysql.SnippetModel
 }
 
 func main() {
@@ -44,9 +47,12 @@ func main() {
 	defer db.Close()
 
 	//intialize new instance of application
+	//added snippetmodels so handlers can use it
+	//dependencies
 	app := &application{
 		InfoLog:  InfoLog,
 		errorLog: errorLog,
+		snippets: &mysql.SnippetModel{DB: db},
 	}
 
 	//Server struct to use the new ERROR log that was created above
