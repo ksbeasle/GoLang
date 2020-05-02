@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -51,6 +52,7 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
+	log.Println("CREATE SNIPPET")
 	//Allow only POST method to be used per HTTP good practices
 	if r.Method != http.MethodPost {
 		//Let user know what Methods are accepted at the endpoint
@@ -61,7 +63,6 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		//http.Error(w, "Method Now allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
 	title := "test"
 	content := "test"
 	expires := "7"

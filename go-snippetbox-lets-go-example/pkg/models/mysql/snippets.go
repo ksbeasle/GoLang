@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"log"
 
 	"ksbeasle.net/snippetbox/pkg/models"
 )
@@ -13,6 +14,7 @@ type SnippetModel struct {
 }
 
 func (m *SnippetModel) Insert(title, content, expires string) (int, error) {
+	log.Println()
 	stmt := `INSERT INTO snippets (title, content, created, expires) 
 	VALUES (?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(),INTERVAL ? DAY))`
 

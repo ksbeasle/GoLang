@@ -34,10 +34,10 @@ func main() {
 	//using log.New(destination, string prefix, flags with additional info combined with | )
 
 	//INFO
-	InfoLog := log.New(os.Stdout, "info: ", log.Ldate|log.Ltime|log.LUTC|log.Lmicroseconds|log.Lshortfile)
+	InfoLog := log.New(os.Stdout, "info: ", log.Ldate|log.Ltime|log.LUTC|log.Lshortfile)
 
 	//ERROR
-	errorLog := log.New(os.Stdout, "error: ", log.Ldate|log.Ltime|log.LUTC|log.Lmicroseconds|log.Lshortfile)
+	errorLog := log.New(os.Stdout, "error: ", log.Ldate|log.Ltime|log.LUTC|log.Lshortfile)
 
 	//db
 	db, err := openDB(*dsn)
