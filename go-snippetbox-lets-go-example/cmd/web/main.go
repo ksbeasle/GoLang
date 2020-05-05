@@ -24,7 +24,7 @@ func main() {
 	//get address from command line
 	address := flag.String("addr", ":8080", "PORT")
 
-	//DSN -
+	//DSN - parseTime is driver specific and helps convert sql time to Go time.Time
 	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
 
 	//Parse BEFORE using address

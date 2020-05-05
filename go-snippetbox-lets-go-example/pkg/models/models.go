@@ -5,12 +5,12 @@ import (
 	"time"
 )
 
-var errNoRecord = errors.New("No record found")
+var ErrNoRecord = errors.New("No record found")
 
 type Snippet struct {
 	ID      int
 	Title   string
 	Content string
-	created time.Time
+	Created time.Time
 	Expires time.Time
 }
