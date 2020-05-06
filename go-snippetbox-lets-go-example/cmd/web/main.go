@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -14,9 +15,10 @@ import (
 
 //application struct for app-wide dependencies
 type application struct {
-	InfoLog  *log.Logger
-	errorLog *log.Logger
-	snippets *mysql.SnippetModel
+	InfoLog       *log.Logger
+	errorLog      *log.Logger
+	snippets      *mysql.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -46,13 +48,21 @@ func main() {
 	}
 	defer db.Close()
 
+	//intialize new template cache
+	// Initialize a new template cache...
+	templateCache, err := newTemplateCache("./ui/html/")
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
 	//intialize new instance of application
 	//added snippetmodels so handlers can use it
 	//dependencies
 	app := &application{
-		InfoLog:  InfoLog,
-		errorLog: errorLog,
-		snippets: &mysql.SnippetModel{DB: db},
+		InfoLog:       InfoLog,
+		errorLog:      errorLog,
+		snippets:      &mysql.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	//Server struct to use the new ERROR log that was created above
@@ -62,7 +72,7 @@ func main() {
 		Handler:  app.routes(),
 	}
 
-	InfoLog.Printf("STARTING SERVER ON PORT %s ...", *address)
+	InfoLog.Printf(" ------------------------- STARTING SERVER ON PORT %s ... -------------------------", *address)
 	//err := http.ListenAndServe(*address, mux)
 	err = serve.ListenAndServe()
 	if err != nil {

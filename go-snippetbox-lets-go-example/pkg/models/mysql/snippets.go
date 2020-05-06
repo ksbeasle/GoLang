@@ -9,7 +9,7 @@ import (
 )
 
 //snippetodel type that wraps a sql.Db
-//we will inject this in main.go
+//we will inject this in main.go and it will act on the Database
 type SnippetModel struct {
 	DB *sql.DB
 }

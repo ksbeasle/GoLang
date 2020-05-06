@@ -25,10 +25,32 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, snip := range s {
-		fmt.Fprintf(w, "%v\n", snip)
-	}
+	// Use the new render helper.
+	app.render(w, r, "home.page.tmpl", &templateData{
+		Snippets: s,
+	})
 
+	// for _, snip := range s {
+	// 	fmt.Fprintf(w, "%v\n", snip)
+	// }
+
+	// data := &templateData{Snippets: s}
+	// files := []string{
+	// 	"./ui/html/home.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partial.tmpl",
+	// }
+
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.ServerError(w, err)
+	// 	return
+	// }
+
+	// err = ts.Execute(w, data)
+	// if err != nil {
+	// 	app.ServerError(w, err)
+	// }
 	// files := []string{
 	// 	"./ui/html/home.page.tmpl",
 	// 	"./ui/html/base.layout.tmpl",
@@ -70,8 +92,28 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	app.render(w, r, "show.page.tmpl", &templateData{Snippet: s})
+	//allow rendering of multiple data in template
+	// data := &templateData{
+	// 	Snippet: s,
+	// }
+	// files := []string{
+	// 	"./ui/html/show.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partial.tmpl",
+	// }
 
-	fmt.Fprintf(w, "%v", s)
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.ServerError(w, err)
+	// 	return
+	// }
+	// err = ts.Execute(w, data)
+	// if err != nil {
+	// 	app.ServerError(w, err)
+
+	// }
+	//fmt.Fprintf(w, "%v", s)
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
