@@ -7,11 +7,14 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/ksbeasle/GoLang/pkg/models/mysql"
 )
 
+//Dependencies for use across the entire application
 type application struct {
 	infoLog  *log.Logger
 	errorLog *log.Logger
+	vgmodel  *mysql.VGModel
 }
 
 func main() {
@@ -31,7 +34,9 @@ func main() {
 	app := &application{
 		infoLog:  infoLog,
 		errorLog: errorLog,
+		vgmodel:  &mysql.VGModel{DB: db},
 	}
+	//Created this struct for a cleaner look
 	serve := &http.Server{
 		ErrorLog: errorLog,
 		Addr:     ":8080",

@@ -1,4 +1,4 @@
-module dev.to/ksbeasle
+module github.com/ksbeasle/GoLang
 
 go 1.14
 
