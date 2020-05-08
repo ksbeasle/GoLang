@@ -2,8 +2,10 @@ package models
 
 import "errors"
 
-var errNoGameFound = errors.New("No game found.")
+//Error if no game was found
+var ErrNoGameFound = errors.New("No game found.")
 
+//Game struct
 type Game struct {
 	ID          int
 	Title       string
