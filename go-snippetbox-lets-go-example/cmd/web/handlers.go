@@ -19,6 +19,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.NotFound(w)
 		return
 	}
+	//panic("oops")
 	s, err := app.snippets.Latest()
 	if err != nil {
 		app.ServerError(w, err)
