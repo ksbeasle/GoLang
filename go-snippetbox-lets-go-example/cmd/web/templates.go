@@ -2,16 +2,21 @@ package main
 
 import (
 	"html/template"
+	"net/url"
 	"path/filepath"
 	"time"
 
+	"ksbeasle.net/snippetbox/pkg/forms"
 	"ksbeasle.net/snippetbox/pkg/models"
 )
 
 type templateData struct {
+	Form        *forms.Form
 	CurrentYear int
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
+	FormData    url.Values
+	FormErrors  map[string]string
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) { // Initialize a new map to act as the cache.
