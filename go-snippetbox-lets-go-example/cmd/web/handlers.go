@@ -14,11 +14,12 @@ import (
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	//this will prevent the slash catching all requests
-	if r.URL.Path != "/" {
-		//http.NotFound(w, r)
-		app.NotFound(w)
-		return
-	}
+	//third party package pat catches the "/" so no need for this check
+	// if r.URL.Path != "/" {
+	// 	//http.NotFound(w, r)
+	// 	app.NotFound(w)
+	// 	return
+	// }
 	//panic("oops")
 	s, err := app.snippets.Latest()
 	if err != nil {
@@ -73,9 +74,12 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// 	app.ServerError(w, err)
 	// }
 }
-
+func (app *application) createSnippetForm(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("placeholder"))
+}
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	//we have to add the ':' otherwise pat will no recognize it
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
 		//app.errorLog.Println(err.Error())
 		//http.Error(w, "Invalid ID", http.StatusNotFound)
@@ -119,16 +123,18 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	log.Println("CREATE SNIPPET")
-	//Allow only POST method to be used per HTTP good practices
-	if r.Method != http.MethodPost {
-		//Let user know what Methods are accepted at the endpoint
-		w.Header().Set("Allow", http.MethodPost)
-		app.ClientError(w, http.StatusMethodNotAllowed)
-		//app.errorLog.Println(http.StatusMethodNotAllowed)
-		//405
-		//http.Error(w, "Method Now allowed", http.StatusMethodNotAllowed)
-		return
-	}
+	//pat only accepts POST for this method so no need to check
+
+	// //Allow only POST method to be used per HTTP good practices
+	// if r.Method != http.MethodPost {
+	// 	//Let user know what Methods are accepted at the endpoint
+	// 	w.Header().Set("Allow", http.MethodPost)
+	// 	app.ClientError(w, http.StatusMethodNotAllowed)
+	// 	//app.errorLog.Println(http.StatusMethodNotAllowed)
+	// 	//405
+	// 	//http.Error(w, "Method Now allowed", http.StatusMethodNotAllowed)
+	// 	return
+	// }
 	title := "test"
 	content := "test"
 	expires := "7"
@@ -139,5 +145,5 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//redirect user to the given id
-	http.Redirect(w, r, fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/snippet?%d", id), http.StatusSeeOther)
 }
