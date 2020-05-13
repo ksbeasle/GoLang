@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"flag"
 	"html/template"
@@ -64,6 +65,7 @@ func main() {
 	//create new session and set the life span to 12 hours
 	session := sessions.New([]byte(*secret))
 	session.Lifetime = 12 * time.Hour
+	session.Secure = true
 
 	//intialize new instance of application
 	//added snippetmodels so handlers can use it
@@ -75,17 +77,27 @@ func main() {
 		snippets:      &mysql.SnippetModel{DB: db},
 		templateCache: templateCache,
 	}
+	//TLS config - cert/key stuff
+	tlsConfig := &tls.Config{
+		PreferServerCipherSuites: true,
+		CurvePreferences:         []tls.CurveID{tls.X25519, tls.CurveP256},
+	}
 
 	//Server struct to use the new ERROR log that was created above
 	serve := &http.Server{
-		Addr:     *address,
-		ErrorLog: errorLog,
-		Handler:  app.routes(),
+		Addr:         *address,
+		ErrorLog:     errorLog,
+		Handler:      app.routes(),
+		TLSConfig:    tlsConfig,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  time.Minute,
 	}
 
 	InfoLog.Printf(" ------------------------- STARTING SERVER ON PORT %s ... -------------------------", *address)
 	//err := http.ListenAndServe(*address, mux)
-	err = serve.ListenAndServe()
+	//err = serve.ListenAndServe()
+	err = serve.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	if err != nil {
 		errorLog.Fatal(err)
 	}

@@ -103,10 +103,7 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, r, "show.page.tmpl", &templateData{
-		Flash:   flash,
-		Snippet: s,
-	})
+	app.render(w, r, "show.page.tmpl", &templateData{Snippet: s})
 	//allow rendering of multiple data in template
 	// data := &templateData{
 	// 	Snippet: s,
