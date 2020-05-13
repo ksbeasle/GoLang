@@ -15,6 +15,9 @@ func (app *application) routes() http.Handler {
 	//The middleware here will be used on each request
 	mw := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
+	//We create a new middleware for the sessions
+	dmw := alice.New(app.session.Enable)
+
 	//mux := http.NewServeMux()
 	// mux.HandleFunc("/", app.home)
 	// mux.HandleFunc("/snippet", app.showSnippet)
@@ -22,10 +25,10 @@ func (app *application) routes() http.Handler {
 
 	//pat
 	mux := pat.New()
-	mux.Get("/", http.HandlerFunc(app.home))
-	mux.Get("/snippet/create", http.HandlerFunc(app.createSnippetForm))
-	mux.Post("/snippet/create", http.HandlerFunc(app.createSnippet))
-	mux.Get("/snippet/:id", http.HandlerFunc(app.showSnippet))
+	mux.Get("/", dmw.ThenFunc(app.home))
+	mux.Get("/snippet/create", dmw.ThenFunc(app.createSnippetForm))
+	mux.Post("/snippet/create", dmw.ThenFunc(app.createSnippet))
+	mux.Get("/snippet/:id", dmw.ThenFunc(app.showSnippet))
 
 	//static files
 	fileServer := http.FileServer(http.Dir("./ui/static/"))

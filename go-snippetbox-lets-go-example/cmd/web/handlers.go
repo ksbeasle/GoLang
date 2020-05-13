@@ -102,7 +102,11 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	app.render(w, r, "show.page.tmpl", &templateData{Snippet: s})
+
+	app.render(w, r, "show.page.tmpl", &templateData{
+		Flash:   flash,
+		Snippet: s,
+	})
 	//allow rendering of multiple data in template
 	// data := &templateData{
 	// 	Snippet: s,
@@ -143,6 +147,11 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	// title := "test"
 	// content := "test"
 	// expires := "7"
+
+	//A new session will be created if the current one is expired or if there
+	//wasnt one to begin with. The middleware handles this
+	//We are adding data to the "flash" key for the session data
+	app.session.Put(r, "flash", "snippet created")
 
 	err := r.ParseForm()
 	if err != nil {

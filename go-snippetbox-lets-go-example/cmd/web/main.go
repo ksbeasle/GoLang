@@ -7,16 +7,19 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"ksbeasle.net/snippetbox/pkg/models/mysql"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golangcollege/sessions"
 )
 
 //application struct for app-wide dependencies
 type application struct {
 	InfoLog       *log.Logger
 	errorLog      *log.Logger
+	session       *sessions.Session
 	snippets      *mysql.SnippetModel
 	templateCache map[string]*template.Template
 }
@@ -28,6 +31,9 @@ func main() {
 
 	//DSN - parseTime is driver specific and helps convert sql time to Go time.Time
 	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+
+	//Secret for the new session
+	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
 
 	//Parse BEFORE using address
 	flag.Parse()
@@ -55,12 +61,17 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	//create new session and set the life span to 12 hours
+	session := sessions.New([]byte(*secret))
+	session.Lifetime = 12 * time.Hour
+
 	//intialize new instance of application
 	//added snippetmodels so handlers can use it
 	//dependencies
 	app := &application{
 		InfoLog:       InfoLog,
 		errorLog:      errorLog,
+		session:       session,
 		snippets:      &mysql.SnippetModel{DB: db},
 		templateCache: templateCache,
 	}
