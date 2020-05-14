@@ -35,6 +35,7 @@ func main() {
 	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
 
 	//Secret for the new session
+	//encryted session
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
 
 	//Parse BEFORE using address
