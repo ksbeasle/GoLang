@@ -3,6 +3,7 @@ package forms
 import (
 	"fmt"
 	"net/url"
+	"regexp"
 	"strings"
 	"unicode/utf8"
 )
@@ -62,4 +63,30 @@ func (f *Form) PermittedValues(field string, opts ...string) {
 //boolean method that will return true if there were no errors
 func (f *Form) Valid() bool {
 	return len(f.Errors) == 0
+}
+
+// This returns a *regexp.Regexp object, or panics in the event of an error.
+//^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
+var EmailRegex = regexp.MustCompile("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$")
+
+//Check min length of user
+func (f *Form) MinLength(field string, length int) {
+	value := f.Get(field)
+	if value == "" {
+		return
+	}
+	if utf8.RuneCountInString(value) < length {
+		f.Errors.Add(field, fmt.Sprintf("need length greater than %d", length))
+	}
+}
+
+func (f *Form) MatchesPattern(field string, pattern *regexp.Regexp) {
+	value := f.Get(field)
+	if value == "" {
+		return
+	}
+
+	if pattern.MatchString(value) == false {
+		f.Errors.Add(field, "Invalid pattern")
+	}
 }

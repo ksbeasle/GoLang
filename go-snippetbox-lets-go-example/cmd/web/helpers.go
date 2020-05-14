@@ -27,7 +27,7 @@ func (app *application) NotFound(w http.ResponseWriter) {
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
-//Render templates from teh Cache to avoid duplicated code
+//Render templates from the Cache to avoid duplicated code
 func (app *application) render(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
 	ts, ok := app.templateCache[name]
 	if !ok {

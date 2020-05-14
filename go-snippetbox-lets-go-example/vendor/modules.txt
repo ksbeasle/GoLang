@@ -11,6 +11,9 @@ github.com/golangcollege/sessions
 ## explicit
 github.com/justinas/alice
 # golang.org/x/crypto v0.0.0-20200317142112-1b76d66859c6
+## explicit
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
 golang.org/x/crypto/internal/subtle
 golang.org/x/crypto/nacl/secretbox
 golang.org/x/crypto/poly1305

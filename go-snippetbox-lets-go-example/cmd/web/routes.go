@@ -30,6 +30,12 @@ func (app *application) routes() http.Handler {
 	mux.Post("/snippet/create", dmw.ThenFunc(app.createSnippet))
 	mux.Get("/snippet/:id", dmw.ThenFunc(app.showSnippet))
 
+	mux.Get("/user/signup", dmw.ThenFunc(app.signupUserForm))
+	mux.Post("/user/signup", dmw.ThenFunc(app.signupUser))
+	mux.Get("/user/login", dmw.ThenFunc(app.loginUserForm))
+	mux.Post("/user/login", dmw.ThenFunc(app.loginUser))
+	mux.Post("/user/logout", dmw.ThenFunc(app.logoutUser))
+
 	//static files
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Get("/static/", http.StripPrefix("/static", fileServer))
