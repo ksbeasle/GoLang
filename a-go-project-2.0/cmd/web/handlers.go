@@ -1,12 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
 	"github.com/ksbeasle/GoLang/pkg/models"
+	"github.com/ksbeasle/GoLang/pkg/validations"
 )
 
 //HOME
@@ -30,30 +33,31 @@ func (app *application) index(w http.ResponseWriter, r *http.Request) {
 //Add a game
 func (app *application) add(w http.ResponseWriter, r *http.Request) {
 	app.infoLog.Println("ADDING GAME ... ")
-
-	//Only allow POST method
-	if r.Method != "POST" {
-		w.Header().Set("Allow", http.MethodPost)
-		app.clientError(w, http.StatusMethodNotAllowed)
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
 		return
 	}
-	title := "test"
-	genre := "test"
-	rating := 1
-	platform := "test"
-	releaseDate := "test"
-
-	id, err := app.vgmodel.Insert(title, genre, rating, platform, releaseDate)
+	//Game to save the data in
+	var g = models.Game{}
+	err = json.Unmarshal(reqBody, &g)
 	if err != nil {
-		app.serverError(w, err)
+		app.clientError(w, http.StatusBadRequest)
+		return
 	}
-	fmt.Fprintf(w, "%d successfully created", id)
+
+	fmt.Println(validations.ValidReleaseDate(g.ReleaseDate))
+	// id, err := app.vgmodel.Insert(title, genre, rating, platform, releaseDate)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
+	// fmt.Fprintf(w, "%d successfully created", id)
 }
 
 //Get a single game based on given id
 func (app *application) getGame(w http.ResponseWriter, r *http.Request) {
 	//Get the id passed in from user (URL)
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
 		return
