@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/ksbeasle/GoLang/pkg/models"
-	"github.com/ksbeasle/GoLang/pkg/validations"
+	v "github.com/ksbeasle/GoLang/pkg/validations"
 )
 
 //HOME
@@ -46,12 +46,42 @@ func (app *application) add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(validations.ValidReleaseDate(g.ReleaseDate))
-	// id, err := app.vgmodel.Insert(title, genre, rating, platform, releaseDate)
-	// if err != nil {
-	// 	app.serverError(w, err)
-	// }
-	// fmt.Fprintf(w, "%d successfully created", id)
+	//Validate user input before inserting
+	err = v.ValidTitle(g.Title)
+	if err != nil {
+		fmt.Fprintf(w, "%s\n", err)
+		return
+	}
+
+	err = v.ValidGenre(g.Genre)
+	if err != nil {
+		fmt.Fprintf(w, "%s\n", err)
+		return
+	}
+
+	err = v.ValidRating(g.Rating)
+	if err != nil {
+		fmt.Fprintf(w, "%s\n", err)
+		return
+	}
+
+	err = v.ValidPlatform(g.Platform)
+	if err != nil {
+		fmt.Fprintf(w, "%s\n", err)
+		return
+	}
+
+	err = v.ValidReleaseDate(g.ReleaseDate)
+	if err != nil {
+		fmt.Fprintf(w, "%s\n", err)
+		return
+	}
+
+	id, err := app.vgmodel.Insert(g.Title, g.Genre, g.Rating, g.Platform, g.ReleaseDate)
+	if err != nil {
+		app.serverError(w, err)
+	}
+	fmt.Fprintf(w, "%d successfully created", id)
 }
 
 //Get a single game based on given id
