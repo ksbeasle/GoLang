@@ -11,13 +11,14 @@ import (
 )
 
 type templateData struct {
-	Flash       string
-	Form        *forms.Form
-	CurrentYear int
-	Snippet     *models.Snippet
-	Snippets    []*models.Snippet
-	FormData    url.Values
-	FormErrors  map[string]string
+	Flash           string
+	Form            *forms.Form
+	CurrentYear     int
+	IsAuthenticated bool
+	Snippet         *models.Snippet
+	Snippets        []*models.Snippet
+	FormData        url.Values
+	FormErrors      map[string]string
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) { // Initialize a new map to act as the cache.

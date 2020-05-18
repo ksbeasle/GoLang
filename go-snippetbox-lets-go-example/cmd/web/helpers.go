@@ -55,6 +55,11 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 	if td == nil {
 		td = &templateData{}
 	}
+	td.IsAuthenticated = app.isAuthenticated(r)
 	td.CurrentYear = time.Now().Year()
 	return td
+}
+
+func (app *application) isAuthenticated(r *http.Request) bool {
+	return app.session.Exists(r, "authenticatedUserID")
 }

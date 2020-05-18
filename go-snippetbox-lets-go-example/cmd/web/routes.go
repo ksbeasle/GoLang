@@ -23,18 +23,18 @@ func (app *application) routes() http.Handler {
 	// mux.HandleFunc("/snippet", app.showSnippet)
 	// mux.HandleFunc("/snippet/create", app.createSnippet)
 
-	//pat
+	//pat - router
 	mux := pat.New()
 	mux.Get("/", dmw.ThenFunc(app.home))
-	mux.Get("/snippet/create", dmw.ThenFunc(app.createSnippetForm))
-	mux.Post("/snippet/create", dmw.ThenFunc(app.createSnippet))
+	mux.Get("/snippet/create", dmw.Append(app.requireAuthentication).ThenFunc(app.createSnippetForm))
+	mux.Post("/snippet/create", dmw.Append(app.requireAuthentication).ThenFunc(app.createSnippet))
 	mux.Get("/snippet/:id", dmw.ThenFunc(app.showSnippet))
 
 	mux.Get("/user/signup", dmw.ThenFunc(app.signupUserForm))
 	mux.Post("/user/signup", dmw.ThenFunc(app.signupUser))
 	mux.Get("/user/login", dmw.ThenFunc(app.loginUserForm))
 	mux.Post("/user/login", dmw.ThenFunc(app.loginUser))
-	mux.Post("/user/logout", dmw.ThenFunc(app.logoutUser))
+	mux.Post("/user/logout", dmw.Append(app.requireAuthentication).ThenFunc(app.logoutUser))
 
 	//static files
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
