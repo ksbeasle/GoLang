@@ -16,6 +16,12 @@ import (
 	"github.com/golangcollege/sessions"
 )
 
+//custome context that can be passed between handlers to keep
+//track of authentication of the user and to prevent key collision with third-party packages
+type contextKey string
+
+const contextKeyIsAuthenticated = contextKey("isAuthenticated")
+
 //application struct for app-wide dependencies
 type application struct {
 	InfoLog       *log.Logger

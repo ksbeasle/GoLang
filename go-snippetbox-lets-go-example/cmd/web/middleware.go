@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/justinas/nosurf"
+	"ksbeasle.net/snippetbox/pkg/models"
 )
 
 //prevent xss and click jacking attack
@@ -68,4 +71,36 @@ func noSurf(next http.Handler) http.Handler {
 		Secure: true,
 	})
 	return csrfHandler
+}
+
+func (app *application) authenticate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//check if authenticateID exists
+		exists := app.session.Exists(r, "authenticatedUserID")
+
+		//if it doesn't exist move on the chain of hanlders as normal
+		if !exists {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// Fetch the details of the current user from the database. If no matching
+		// record is found, or the current user has been deactivated, remove the
+		// (invalid) authenticatedUserID value from their session and call the next
+		// handler in the chain as normal.
+		user, err := app.users.Get(app.session.GetInt(r, "authenticatedUserID"))
+		if errors.Is(err, models.ErrNoRecord) || !user.Active {
+			app.session.Remove(r, "authenticatedUserID")
+			next.ServeHTTP(w, r)
+			return
+		} else if err != nil {
+			app.ServerError(w, err)
+			return
+		}
+
+		//otherwise the user is authenticated so we make a copy of the context
+		//with our custom context then create a copy of the request r
+		ctx := context.WithValue(r.Context(), contextKeyIsAuthenticated, true)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
