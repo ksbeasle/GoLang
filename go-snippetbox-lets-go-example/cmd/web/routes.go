@@ -16,7 +16,7 @@ func (app *application) routes() http.Handler {
 	mw := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
 	//We create a new middleware for the sessions
-	dmw := alice.New(app.session.Enable)
+	dmw := alice.New(app.session.Enable, noSurf)
 
 	//mux := http.NewServeMux()
 	// mux.HandleFunc("/", app.home)

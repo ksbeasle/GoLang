@@ -10,6 +10,9 @@ github.com/golangcollege/sessions
 # github.com/justinas/alice v1.2.0
 ## explicit
 github.com/justinas/alice
+# github.com/justinas/nosurf v1.1.0
+## explicit
+github.com/justinas/nosurf
 # golang.org/x/crypto v0.0.0-20200317142112-1b76d66859c6
 ## explicit
 golang.org/x/crypto/bcrypt

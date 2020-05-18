@@ -68,6 +68,7 @@ func main() {
 	session := sessions.New([]byte(*secret))
 	session.Lifetime = 12 * time.Hour
 	session.Secure = true
+	session.SameSite = http.SameSiteStrictMode
 
 	//intialize new instance of application
 	//added snippetmodels so handlers can use it

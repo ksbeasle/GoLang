@@ -15,6 +15,7 @@ type templateData struct {
 	Form            *forms.Form
 	CurrentYear     int
 	IsAuthenticated bool
+	CSRFToken       string
 	Snippet         *models.Snippet
 	Snippets        []*models.Snippet
 	FormData        url.Values
