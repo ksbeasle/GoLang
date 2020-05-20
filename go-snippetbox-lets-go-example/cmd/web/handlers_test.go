@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -9,35 +10,21 @@ import (
 )
 
 func TestPing(t *testing.T) {
-	//record http response headers/status code/body
-	responseRecorder := httptest.NewRecorder()
+	//After adding testutils_test.go file
+	app := newTestApplicaion()
+	tlsServer := newTestServer(t, app.routes())
+	defer tlsServer.Close()
 
-	//Dummy request
-	r, err := http.NewRequest(http.MethodGet, "/", nil)
-	if err != nil {
-		t.Fatal(err)
+	//Lets get the status code, header, and body
+	statusCode, header, body := tlsServer.get(t, "/ping")
+
+	if statusCode != http.StatusOK {
+		t.Errorf("\nGot: %q\n Want: %d", statusCode, http.StatusOK)
 	}
+	fmt.Println(header)
 
-	// Call the ping handler function, passing in the
-	// httptest.ResponseRecorder and http.Request.
-	ping(responseRecorder, r)
-
-	//result from ping()
-	result := responseRecorder.Result()
-
-	//check the status code
-	if result.StatusCode != http.StatusOK {
-		t.Errorf("\nGot: %q \nWant: %q", result.StatusCode, http.StatusOK)
-	}
-
-	defer result.Body.Close()
-	//check the body
-	body, err := ioutil.ReadAll(result.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
 	if string(body) != "OK" {
-		t.Errorf("\nGot: %q \nWant: %q", body, result.Body)
+		t.Errorf("\nGot: %q\n Want: OK", body)
 	}
 
 }
