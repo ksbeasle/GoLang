@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -11,7 +12,7 @@ import (
 
 func TestPing(t *testing.T) {
 	//After adding testutils_test.go file
-	app := newTestApplicaion()
+	app := newTestApplication(t)
 	tlsServer := newTestServer(t, app.routes())
 	defer tlsServer.Close()
 
@@ -69,5 +70,42 @@ func TestE2EPing(t *testing.T) {
 
 	if string(body) != "OK" {
 		t.Errorf("\nGot: %q\nWant: OK", body)
+	}
+}
+
+func TestShowSnippet(t *testing.T) {
+	// Create a new instance of our application struct which uses the mocked // dependencies.
+	app := newTestApplication(t)
+	// Establish a new test server for running end-to-end tests.
+	tlsServer := newTestServer(t, app.routes())
+	defer tlsServer.Close()
+	// Set up some table-driven tests to check the responses sent by our // application for different URLs.
+	tests := []struct {
+		name     string
+		urlPath  string
+		wantCode int
+		wantBody []byte
+	}{
+		{"Valid ID", "/snippet/1", http.StatusOK, []byte("Mock")},
+		{"Non-existent ID", "/snippet/2", http.StatusNotFound, nil},
+		{"Negative ID", "/snippet/-1", http.StatusNotFound, nil},
+		{"Decimal ID", "/snippet/1.23", http.StatusNotFound, nil},
+		{"String ID", "/snippet/foo", http.StatusNotFound, nil},
+		{"Empty ID", "/snippet/", http.StatusNotFound, nil},
+		{"Trailing slash", "/snippet/1/", http.StatusNotFound, nil},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			code, _, body := tlsServer.get(t, test.urlPath)
+
+			if code != test.wantCode {
+				t.Errorf("\nGot: %q\nWant: %q", code, test.wantCode)
+			}
+
+			if !bytes.Contains(body, test.wantBody) {
+				t.Errorf("want body to contain %q", test.wantBody)
+			}
+		})
 	}
 }
