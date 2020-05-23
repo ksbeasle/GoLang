@@ -7,14 +7,21 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/ksbeasle/GoLang/pkg/models"
 	"github.com/ksbeasle/GoLang/pkg/models/mysql"
 )
 
 //Dependencies for use across the entire application
+//We changed vgmodel to an interface in order to use mocks for testing
+//As long as those methods are satisfied everything should run fine
 type application struct {
 	infoLog  *log.Logger
 	errorLog *log.Logger
-	vgmodel  *mysql.VGModel
+	vgmodel  interface {
+		Insert(title string, genre string, rating int, platform string, releaseDate string) (int, error)
+		All() ([]*models.Game, error)
+		Get(id int) (*models.Game, error)
+	}
 }
 
 func main() {
