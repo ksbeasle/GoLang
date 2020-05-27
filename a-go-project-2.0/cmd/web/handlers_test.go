@@ -1,17 +1,20 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"net/http"
 	"testing"
 )
 
 func TestGetGame(t *testing.T) {
 
+	//Test application
+	app := NewTestApplication(t)
+
 	//Test server
 	server := NewTestServer(t, app.routes())
 	defer server.Close()
-	//Test application
-	app := NewTestApplication(t)
 
 	testCases := []struct {
 		name     string
@@ -34,10 +37,14 @@ func TestGetGame(t *testing.T) {
 
 		//check if the status code matches
 		if code != tc.wantCode {
-			t.Errorf("\nGot: %d\nWant: %d", code, http.StatusNotFound)
+			fmt.Println("code", code)
+			fmt.Println(tc.wantCode)
+			t.Errorf("\nGot: %q\nWant: %q", code, http.StatusNotFound)
 		}
 
-		if 
+		if !bytes.Contains(tc.wantBody, body) {
+			t.Errorf("\nGot: %q\nWant: %q", body, tc.wantBody)
+		}
 	}
 
 }

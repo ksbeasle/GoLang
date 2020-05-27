@@ -16,7 +16,7 @@ import (
 func (app *application) index(w http.ResponseWriter, r *http.Request) {
 	app.infoLog.Println("HOME ... ")
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		app.NotFound(w)
 	}
 	g, err := app.vgmodel.All()
 	if err != nil {
@@ -89,14 +89,14 @@ func (app *application) getGame(w http.ResponseWriter, r *http.Request) {
 	//Get the id passed in from user (URL)
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
-		http.NotFound(w, r)
+		app.NotFound(w)
 		return
 	}
 
 	g, err := app.vgmodel.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoGameFound) {
-			http.NotFound(w, r)
+			app.NotFound(w)
 		} else {
 			app.serverError(w, err)
 		}

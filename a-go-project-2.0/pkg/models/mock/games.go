@@ -22,9 +22,10 @@ func (vg *VGModel) All() ([]*models.Game, error) {
 }
 
 func (vg *VGModel) Get(Id int) (*models.Game, error) {
-	switch Id:
-case 1:
-	return mockGame, nil
-default:
-	return nil, models.ErrNoGameFound
+	switch Id {
+	case 1:
+		return mockGame, nil
+	default:
+		return nil, models.ErrNoGameFound
+	}
 }

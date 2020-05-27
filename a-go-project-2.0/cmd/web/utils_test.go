@@ -15,7 +15,7 @@ func NewTestApplication(t *testing.T) *application {
 	return &application{
 		infoLog:  log.New(ioutil.Discard, "", 0),
 		errorLog: log.New(ioutil.Discard, "", 0),
-		games:    &mock.VGModel,
+		vgmodel:  &mock.VGModel{},
 	}
 }
 
@@ -24,7 +24,7 @@ type testServer struct {
 }
 
 //Test server
-func NewTestServer(t *testing.T, hanlder http.Handler) *testServer {
+func NewTestServer(t *testing.T, handler http.Handler) *testServer {
 	server := httptest.NewServer(handler)
 	return &testServer{server}
 }

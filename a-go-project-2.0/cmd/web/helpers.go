@@ -21,3 +21,8 @@ func (app *application) serverError(w http.ResponseWriter, err error) {
 
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
+
+/* Convenient wrapper for ClientError to send 404 not found response */
+func (app *application) NotFound(w http.ResponseWriter) {
+	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+}
