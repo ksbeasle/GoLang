@@ -8,8 +8,8 @@ import (
 
 var mockSnippet = &models.Snippet{
 	ID:      1,
-	Title:   "Mock",
-	Content: "Mock",
+	Title:   "MockTitle",
+	Content: "MockContent",
 	Created: time.Now(),
 	Expires: time.Now(),
 }

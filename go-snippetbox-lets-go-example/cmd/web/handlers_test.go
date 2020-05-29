@@ -98,8 +98,12 @@ func TestShowSnippet(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			code, _, body := tlsServer.get(t, test.urlPath)
-
+			fmt.Println(code)
+			fmt.Println(test.wantCode)
+			fmt.Println(body)
+			fmt.Println(test.wantBody)
 			if code != test.wantCode {
+
 				t.Errorf("\nGot: %q\nWant: %q", code, test.wantCode)
 			}
 
@@ -108,4 +112,19 @@ func TestShowSnippet(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSignUp(t *testing.T) {
+	// Create a new instance of our application struct which uses the mocked // dependencies.
+	app := newTestApplication(t)
+	// Establish a new test server for running end-to-end tests.
+	tlsServer := newTestServer(t, app.routes())
+	defer tlsServer.Close()
+
+	//make the get request to the signup user
+	_, _, body := tlsServer.get(t, "/user/signup")
+
+	token := getCSRFToken(t, body)
+
+	t.Log(token)
 }

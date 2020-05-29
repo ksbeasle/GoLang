@@ -1,11 +1,13 @@
 package main
 
 import (
+	"html"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"regexp"
 	"testing"
 	"time"
 
@@ -80,3 +82,26 @@ func (tlsServer *testServer) get(t *testing.T, url string) (int, http.Header, []
 
 	return res.StatusCode, res.Header, body
 }
+
+//regular expression which captures CSRF token
+var csrfToken = regexp.MustCompile(`<input type='hidden' name='csrf_token' value='(.+)'>`)
+
+func getCSRFToken(t *testing.T, body []byte) string {
+	//using FindSubmatch method to take the token from the html body
+	match := csrfToken.FindSubmatch(body)
+	if len(match) < 2 {
+		t.Fatal("no CSRF token found")
+	}
+	return html.UnescapeString(string(match[1]))
+}
+
+// func (ts *testServer) postForm(t *testing.T, url string, form url.Values) (int, http.Header, []byte) {
+// 	rs, err := ts.Client().PostForm(ts.URL+url, form) if err != nil {
+// 		t.Fatal(err) }
+// 		// Read the response body.
+// 		defer rs.Body.Close()
+// 		body, err := ioutil.ReadAll(rs.Body) if err != nil {
+// 		t.Fatal(err) }
+// 		// Return the response status, headers and body.
+// 		return rs.StatusCode, rs.Header, body
+// }
