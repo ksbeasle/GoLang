@@ -18,4 +18,12 @@ func newTestDB(t *testing.T) (*sql.DB, func()) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	//run the script
+	_, err := db.Exec(string(script))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	db.Close()
 }
