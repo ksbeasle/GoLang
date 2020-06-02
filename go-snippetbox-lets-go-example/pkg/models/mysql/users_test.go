@@ -18,7 +18,8 @@ func TestUserModelGet(t *testing.T) {
 		wantUser  *models.User
 		wantError error
 	}{
-		{name: "Valid ID",
+		{
+			name: "Valid ID",
 			userID: 1,
 			wantUser: &models.User{
 				ID:      1,
@@ -26,6 +27,19 @@ func TestUserModelGet(t *testing.T) {
 				Email:   "email@example.com",
 				Created: time.Now(),
 				Active:  true,
-			}},
+			}
+		},
+		{
+			name: "Zero ID",
+			userID: 0,
+			wantUser: nil,
+			wantError: models.ErrNoRecord,
+		},
+		{
+			name: "ID doesn't Exist",
+			userID: 2,
+			wantUser: nil,
+			wantError: models.ErrNoRecord,
+		},
 	}
 }
