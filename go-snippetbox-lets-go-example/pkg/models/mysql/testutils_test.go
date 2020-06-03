@@ -20,7 +20,7 @@ func newTestDB(t *testing.T) (*sql.DB, func()) {
 	}
 
 	//run the script
-	_, err := db.Exec(string(script))
+	_, err = db.Exec(string(script))
 	if err != nil {
 		t.Fatal(err)
 	}

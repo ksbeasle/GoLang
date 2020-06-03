@@ -19,6 +19,6 @@ active BOOLEAN NOT NULL DEFAULT TRUE
 
 ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
 
-INSERT INTO users (name, email, hashed_password, created) VALUES ( 'Alice Jones',
-'alice@example.com', '$2a$12$NuTjWXm3KKntReFwyBVHyuf/to.HEwTy.eS206TNfkGfr6HzGJSWG', '2018-12-23 17:25:22'
+INSERT INTO users (name, email, hashed_password, created) VALUES ( 'user name',
+'email@example.com', '$2a$12$NuTjWXm3KKntReFwyBVHyuf/to.HEwTy.eS206TNfkGfr6HzGJSWG', '2018-12-23 17:25:22'
 );
