@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"testing"
 )
@@ -34,8 +33,6 @@ func TestGetGame(t *testing.T) {
 	//loop through testCases
 	for _, tc := range testCases {
 		code, body := server.get(t, tc.url)
-		fmt.Println("code", code)
-		fmt.Println(tc.wantCode)
 		//check if the status code matches
 		if code != tc.wantCode {
 
