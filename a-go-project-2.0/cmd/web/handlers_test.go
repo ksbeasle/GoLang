@@ -6,6 +6,41 @@ import (
 	"testing"
 )
 
+func TestIndex(t *testing.T) {
+	//Test application
+	app := NewTestApplication(t)
+
+	//Test server
+	server := NewTestServer(t, app.routes())
+	defer server.Close()
+
+	tests := []struct {
+		name     string
+		url      string
+		wantCode int
+		wantBody []byte
+	}{
+		{"Valid Request", "/", http.StatusOK, []byte("Halo 3")},
+		{"Digit after slash", "/2", http.StatusNotFound, nil},
+		{"Random characters after slash", "/fadsv321sacd", http.StatusNotFound, nil},
+		{"Double slash", "//", http.StatusNotFound, nil},
+		{"No slash", "", http.StatusNotFound, nil},
+	}
+
+	for testcase := range tests {
+		t.Run(testcase.name, func(t *testing.T) {
+			code, body := server.get(t, testcase.url)
+
+			if testcase.wantCode != code {
+				t.Errorf("\nGot: %q\nWant: %d", code, testcase.wantCode)
+			}
+
+			if !bytes.Contains(body, testcase.wantBody) {
+				t.Errorf("\nGot: %q\nWant: %q", body, testcase.wantBody)
+			}
+		})
+	}
+}
 func TestGetGame(t *testing.T) {
 
 	//Test application
@@ -46,3 +81,7 @@ func TestGetGame(t *testing.T) {
 	}
 
 }
+
+// func TestAddGame(t *testing.T) {
+
+// }
