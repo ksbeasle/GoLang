@@ -82,21 +82,3 @@ func TestGetGame(t *testing.T) {
 	}
 
 }
-
-// func TestAddGame(t *testing.T) {
-// 	app := NewTestApplication(t)
-
-// 	server := NewTestServer(t, app.routes())
-// 	defer server.Close()
-
-// 	tests := []struct {
-// 		name     string
-// 		url      string
-// 		wantCode int
-// 		wantBody []byte
-// 	}{
-// 		{"Valid game insert", "/game/add", http.StatusOK, []byte("Halo 3")},
-// 		{"Invalid game insert", "/game/addd", http.StatusNotFound, nil},
-// 	}
-
-// }

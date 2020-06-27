@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"runtime/debug"
 )
@@ -13,6 +14,7 @@ func (app *application) clientError(w http.ResponseWriter, status int) {
 
 //Server side Error
 func (app *application) serverError(w http.ResponseWriter, err error) {
+	log.Println("IT here")
 	//Using stacktrace so we can get more information on the server side error for debugging
 	stacktrace := fmt.Sprintf("%s \n %s", err.Error(), debug.Stack())
 
