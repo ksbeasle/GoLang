@@ -11,6 +11,13 @@ import (
 	"github.com/ksbeasle/GoLang/pkg/models/mysql"
 )
 
+/*Run the command in this comment to run app
+***************IMPORTANT******************
+******************************************
+go run $(ls -1 *.go | grep -v _test.go)
+******************************************
+******************************************
+*/
 //Dependencies for use across the entire application
 //We changed vgmodel to an interface in order to use mocks for testing
 //As long as those methods are satisfied everything should run fine

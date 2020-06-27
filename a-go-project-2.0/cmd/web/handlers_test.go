@@ -20,25 +20,23 @@ func TestIndex(t *testing.T) {
 		wantCode int
 		wantBody []byte
 	}{
-		{"Valid Request", "/", http.StatusOK, []byte("Halo 3")},
-		{"Digit after slash", "/2", http.StatusNotFound, nil},
-		{"Random characters after slash", "/fadsv321sacd", http.StatusNotFound, nil},
-		{"Double slash", "//", http.StatusNotFound, nil},
-		{"No slash", "", http.StatusNotFound, nil},
+		{"Valid url", "/", http.StatusOK, []byte("Halo 3")},
+		{"Invalid url", "//", http.StatusNotFound, nil},
 	}
 
-	for testcase := range tests {
+	for _, testcase := range tests {
 		t.Run(testcase.name, func(t *testing.T) {
 			code, body := server.get(t, testcase.url)
 
-			if testcase.wantCode != code {
-				t.Errorf("\nGot: %q\nWant: %d", code, testcase.wantCode)
+			if code != testcase.wantCode {
+				t.Errorf("\nGot: %q\nWant: %q", code, testcase.wantCode)
 			}
 
 			if !bytes.Contains(body, testcase.wantBody) {
 				t.Errorf("\nGot: %q\nWant: %q", body, testcase.wantBody)
 			}
 		})
+
 	}
 }
 func TestGetGame(t *testing.T) {
@@ -67,21 +65,38 @@ func TestGetGame(t *testing.T) {
 
 	//loop through testCases
 	for _, tc := range testCases {
-		code, body := server.get(t, tc.url)
-		//check if the status code matches
-		if code != tc.wantCode {
+		t.Run(tc.name, func(t *testing.T) {
+			code, body := server.get(t, tc.url)
+			//check if the status code matches
+			if code != tc.wantCode {
 
-			t.Errorf("\nGot: %q\nWant: %d", code, tc.wantCode)
-		}
+				t.Errorf("\nGot: %q\nWant: %d", code, tc.wantCode)
+			}
 
-		//HOW DOES !bytes.Contains(tc.wantBody, body) affect the code test case????
-		if !bytes.Contains(body, tc.wantBody) {
-			t.Errorf("\nGot: %q\nWant: %q", body, tc.wantBody)
-		}
+			//HOW DOES !bytes.Contains(tc.wantBody, body) affect the code test case????
+			if !bytes.Contains(body, tc.wantBody) {
+				t.Errorf("\nGot: %q\nWant: %q", body, tc.wantBody)
+			}
+		})
+
 	}
 
 }
 
 // func TestAddGame(t *testing.T) {
+// 	app := NewTestApplication(t)
+
+// 	server := NewTestServer(t, app.routes())
+// 	defer server.Close()
+
+// 	tests := []struct {
+// 		name     string
+// 		url      string
+// 		wantCode int
+// 		wantBody []byte
+// 	}{
+// 		{"Valid game insert", "/game/add", http.StatusOK, []byte("Halo 3")},
+// 		{"Invalid game insert", "/game/addd", http.StatusNotFound, nil},
+// 	}
 
 // }
