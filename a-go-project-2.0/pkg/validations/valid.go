@@ -8,10 +8,11 @@ import (
 	"time"
 )
 
+//Errors
 var (
-	emptyTitleErr       = errors.New("Title cannot be empty.")
-	emptyGenreErr       = errors.New("Genre cannot be empty.")
-	invalidRatingErr    = errors.New("Rating must be between 1 and 10.")
+	ErrEmptyTitle       = errors.New("Title cannot be empty.")
+	ErrEmptyGenre       = errors.New("Genre cannot be empty.")
+	ErrInvalidRating    = errors.New("Rating must be between 1 and 10.")
 	emptyPlatformErr    = errors.New("Platform cannot be empty.")
 	emptyReleaseDateErr = errors.New("Release date cannot be empty.")
 	invalidYearErr      = errors.New("Year must be between 1958 and the current year")
@@ -27,7 +28,7 @@ var validMonths = []string{"April", "August", "December", "February", "January",
 func ValidTitle(s string) error {
 	//Check if the title is empty
 	if s == "" {
-		return emptyTitleErr
+		return ErrEmptyTitle
 	}
 	return nil
 }
@@ -36,7 +37,7 @@ func ValidTitle(s string) error {
 func ValidGenre(s string) error {
 	//Check if the genre is empty
 	if s == "" {
-		return emptyGenreErr
+		return ErrEmptyGenre
 	}
 	return nil
 }
@@ -46,7 +47,7 @@ func ValidRating(i int) error {
 	//Check if the rating is less than 1 or greater than 10
 	//This way we can make sure that the rating was sent in properly and isn't the 0 value of int
 	if i < 1 || i > 10 {
-		return invalidRatingErr
+		return ErrInvalidRating
 	}
 	return nil
 }
