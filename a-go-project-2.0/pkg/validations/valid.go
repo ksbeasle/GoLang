@@ -10,25 +10,25 @@ import (
 
 //Errors
 var (
-	ErrEmptyTitle       = errors.New("Title cannot be empty.")
-	ErrEmptyGenre       = errors.New("Genre cannot be empty.")
-	ErrInvalidRating    = errors.New("Rating must be between 1 and 10.")
-	emptyPlatformErr    = errors.New("Platform cannot be empty.")
-	emptyReleaseDateErr = errors.New("Release date cannot be empty.")
-	invalidYearErr      = errors.New("Year must be between 1958 and the current year")
-	invalidMonthErr     = errors.New("Month must be (January, February, etc...)")
-	invalidDayErr       = errors.New("Day must be between 1 and 31")
-	invalidReleaseDate  = errors.New("Date is not valid.")
+	errEmptyTitle         = errors.New("title cannot be empty")
+	errEmptyGenre         = errors.New("genre cannot be empty")
+	errInvalidRating      = errors.New("rating must be between 1 and 10")
+	errEmptyPlatform      = errors.New("platform cannot be empty")
+	errEmptyReleaseDate   = errors.New("release date cannot be empty")
+	errInvalidYear        = errors.New("year must be between 1958 and the current year")
+	errInvalidMonth       = errors.New("month must be (January, February, etc...)")
+	errInvalidDay         = errors.New("day must be between 1 and 31")
+	errInvalidReleaseDate = errors.New("date is not valid")
 )
 
 //Sorted because sort package must work with sorted data in order to use some methods
 var validMonths = []string{"April", "August", "December", "February", "January", "July", "June", "March", "May", "November", "October", "September"}
 
-//Validate game title
+//ValidTitle - Validate game title
 func ValidTitle(s string) error {
 	//Check if the title is empty
 	if s == "" {
-		return ErrEmptyTitle
+		return errEmptyTitle
 	}
 	return nil
 }
@@ -37,7 +37,7 @@ func ValidTitle(s string) error {
 func ValidGenre(s string) error {
 	//Check if the genre is empty
 	if s == "" {
-		return ErrEmptyGenre
+		return errEmptyGenre
 	}
 	return nil
 }
@@ -47,7 +47,7 @@ func ValidRating(i int) error {
 	//Check if the rating is less than 1 or greater than 10
 	//This way we can make sure that the rating was sent in properly and isn't the 0 value of int
 	if i < 1 || i > 10 {
-		return ErrInvalidRating
+		return errInvalidRating
 	}
 	return nil
 }
@@ -56,7 +56,7 @@ func ValidRating(i int) error {
 func ValidPlatform(s string) error {
 	//Check if the platform is empty
 	if s == "" {
-		return emptyPlatformErr
+		return errEmptyPlatform
 	}
 	return nil
 }
@@ -65,7 +65,7 @@ func ValidPlatform(s string) error {
 func ValidReleaseDate(s string) error {
 	//Check if the release date is empty
 	if s == "" {
-		return emptyReleaseDateErr
+		return errEmptyReleaseDate
 	}
 
 	//Split the string to check the date
@@ -73,7 +73,7 @@ func ValidReleaseDate(s string) error {
 
 	year, err := strconv.Atoi(splitDate[2])
 	if err != nil {
-		return invalidYearErr
+		return errInvalidYear
 	}
 
 	month := splitDate[0]
@@ -87,7 +87,7 @@ func ValidReleaseDate(s string) error {
 	if year <= time.Now().Year() && year > 1958 {
 		date = date + splitDate[2] + "-"
 	} else {
-		return invalidYearErr
+		return errInvalidYear
 	}
 
 	//check if month is actually valid
@@ -119,10 +119,10 @@ func ValidReleaseDate(s string) error {
 		case "December":
 			date = date + "12" + "-"
 		default:
-			return invalidMonthErr
+			return errInvalidMonth
 		}
 	} else {
-		return invalidMonthErr
+		return errInvalidMonth
 	}
 
 	if day > 0 && day <= 31 {
@@ -131,7 +131,7 @@ func ValidReleaseDate(s string) error {
 
 	_, err = time.Parse("2006-01-02", date)
 	if err != nil {
-		return invalidReleaseDate
+		return errInvalidReleaseDate
 	}
 
 	return nil

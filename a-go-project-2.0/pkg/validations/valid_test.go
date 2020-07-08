@@ -11,7 +11,7 @@ func TestValidTitle(t *testing.T) {
 		wantError error
 	}{
 		{"Valid Title", "title", nil},
-		{"Invalid Title", "", ErrEmptyTitle},
+		{"Invalid Title", "", errEmptyTitle},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -33,7 +33,7 @@ func TestValidGenre(t *testing.T) {
 		wantError error
 	}{
 		{"Valid Genre", "genre", nil},
-		{"Invalid Genre", "", ErrEmptyGenre},
+		{"Invalid Genre", "", errEmptyGenre},
 	}
 
 	for _, tc := range tests {
@@ -54,14 +54,35 @@ func TestValidRating(t *testing.T) {
 		wantError error
 	}{
 		{"Valid Rating", 10, nil},
-		{"Invalid Rating", 0, ErrInvalidRating},
-		{"Invalid Rating negative", -1, ErrInvalidRating},
-		{"Invalid Rating out of bounds", 100, ErrInvalidRating},
+		{"Invalid Rating", 0, errInvalidRating},
+		{"Invalid Rating negative", -1, errInvalidRating},
+		{"Invalid Rating out of bounds", 100, errInvalidRating},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			err := ValidRating(tc.rating)
+
+			if err != tc.wantError {
+				t.Errorf("Got: %v\nWant: %v", err, tc.wantError)
+			}
+		})
+	}
+}
+
+func TestValidateReleaseDate(t *testing.T) {
+	tests := []struct {
+		name      string
+		date      string
+		wantError error
+	}{
+		{"Valid Date", "October 26, 1995", nil},
+		{"Invalid Date", "", errEmptyReleaseDate},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			err := ValidReleaseDate(tc.date)
 
 			if err != tc.wantError {
 				t.Errorf("Got: %v\nWant: %v", err, tc.wantError)
