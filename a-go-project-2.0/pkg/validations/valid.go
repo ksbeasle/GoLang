@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// **IGNORING LEAP YEARS**
 //Errors
 var (
 	errEmptyTitle         = errors.New("title cannot be empty")
@@ -17,7 +18,10 @@ var (
 	errEmptyReleaseDate   = errors.New("release date cannot be empty")
 	errInvalidYear        = errors.New("year must be between 1958 and the current year")
 	errInvalidMonth       = errors.New("month must be (January, February, etc...)")
-	errInvalidDay         = errors.New("day must be between 1 and 31")
+	errInvalidDay         = errors.New("invalid day less than 0 or greater than 31")
+	errInvalidDay31       = errors.New("for this particular month the day must be between 1 and 31")
+	errInvalidDay30       = errors.New("for this particular month the day must be between 1 and 30")
+	errInvalidDayFeb      = errors.New("for this particular month the day must be 28")
 	errInvalidReleaseDate = errors.New("date is not valid")
 )
 
@@ -124,10 +128,32 @@ func ValidReleaseDate(s string) error {
 	} else {
 		return errInvalidMonth
 	}
-
-	if day > 0 && day <= 31 {
-		date = date + strings.TrimSuffix(splitDate[1], ",")
+	//check valid day
+	if day < 1 || day > 31 {
+		return errInvalidDay
 	}
+	//Check months with 31 days
+	if day == 31 {
+		if month == "January" || month == "March" || month == "May" || month == "July" || month == "August" || month == "October" || month == "December" {
+			//Do nothing on purpose
+		} else {
+			return errInvalidDay31
+		}
+	}
+	//check months for 30 days
+	if day == 30 {
+		if month == "April" || month == "June" || month == "September" || month == "November" {
+			//Do nothing on purpose
+		} else {
+			return errInvalidDay30
+		}
+	}
+
+	if month == "February" && day > 28 {
+		return errInvalidDayFeb
+	}
+
+	date = date + strings.TrimSuffix(splitDate[1], ",")
 
 	_, err = time.Parse("2006-01-02", date)
 	if err != nil {

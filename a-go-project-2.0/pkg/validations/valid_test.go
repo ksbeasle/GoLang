@@ -77,7 +77,11 @@ func TestValidateReleaseDate(t *testing.T) {
 		wantError error
 	}{
 		{"Valid Date", "October 26, 1995", nil},
-		{"Invalid Date", "", errEmptyReleaseDate},
+		{"Valid Date 2", "November 26, 1995", nil},
+		{"Valid Date Feb", "February 28, 1995", nil},
+		{"Invalid Date empty", "", errEmptyReleaseDate},
+		{"Invalid Date bad day", "December 32, 1995", errInvalidDay},
+		{"Invalid Date bad day for particular month", "February 31, 1995", errInvalidDay31},
 	}
 
 	for _, tc := range tests {
