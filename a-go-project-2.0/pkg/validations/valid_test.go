@@ -79,9 +79,11 @@ func TestValidateReleaseDate(t *testing.T) {
 		{"Valid Date", "October 26, 1995", nil},
 		{"Valid Date 2", "November 26, 1995", nil},
 		{"Valid Date Feb", "February 28, 1995", nil},
+		{"Invalid Date - February 30th", "February 30, 1995", errInvalidDayFeb},
+		{"Invalid Date - September 31st", "September 31, 2000", errInvalidDay30},
 		{"Invalid Date empty", "", errEmptyReleaseDate},
 		{"Invalid Date bad day", "December 32, 1995", errInvalidDay},
-		{"Invalid Date bad day for particular month", "February 31, 1995", errInvalidDay31},
+		{"Invalid Date bad day for particular month", "February 31, 1995", errInvalidDayFeb},
 	}
 
 	for _, tc := range tests {

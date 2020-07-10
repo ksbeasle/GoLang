@@ -94,63 +94,80 @@ func ValidReleaseDate(s string) error {
 		return errInvalidYear
 	}
 
+	//check valid day
+	if day < 1 || day > 31 {
+		return errInvalidDay
+	}
+
 	//check if month is actually valid
 	check := sort.SearchStrings(validMonths, splitDate[0])
 	if check < len(validMonths) && validMonths[check] == splitDate[0] {
 		switch month {
 		case "January":
+			if day < 1 || day > 31 {
+				return errInvalidDay31
+			}
 			date = date + "01" + "-"
 		case "February":
+			if day < 1 || day > 28 {
+				return errInvalidDayFeb
+			}
 			date = date + "02" + "-"
 		case "March":
+			if day < 1 || day > 31 {
+				return errInvalidDay31
+			}
 			date = date + "03" + "-"
 		case "April":
+			if day < 1 || day > 30 {
+				return errInvalidDay30
+			}
 			date = date + "04" + "-"
 		case "May":
+			if day < 1 || day > 31 {
+				return errInvalidDay31
+			}
 			date = date + "05" + "-"
 		case "June":
+			if day < 1 || day > 30 {
+				return errInvalidDay30
+			}
 			date = date + "06" + "-"
 		case "July":
+			if day < 1 || day > 31 {
+				return errInvalidDay31
+			}
 			date = date + "07" + "-"
 		case "August":
+			if day < 1 || day > 31 {
+				return errInvalidDay31
+			}
 			date = date + "08" + "-"
 		case "September":
+			if day < 1 || day > 30 {
+				return errInvalidDay30
+			}
 			date = date + "09" + "-"
 		case "October":
+			if day < 1 || day > 31 {
+				return errInvalidDay31
+			}
 			date = date + "10" + "-"
 		case "November":
+			if day < 1 || day > 30 {
+				return errInvalidDay30
+			}
 			date = date + "11" + "-"
 		case "December":
+			if day < 1 || day > 31 {
+				return errInvalidDay31
+			}
 			date = date + "12" + "-"
 		default:
 			return errInvalidMonth
 		}
 	} else {
 		return errInvalidMonth
-	}
-	//check valid day
-	if day < 1 || day > 31 {
-		return errInvalidDay
-	}
-	//Check months with 31 days
-	if day == 31 {
-		if month == "January" || month == "March" || month == "May" || month == "July" || month == "August" || month == "October" || month == "December" {
-			//Do nothing on purpose
-		} else {
-			return errInvalidDay31
-		}
-	}
-	//check months for 30 days
-	if day == 30 {
-		if month == "April" || month == "June" || month == "September" || month == "November" {
-			//Do nothing on purpose
-		} else {
-			return errInvalidDay30
-		}
-	}
-
-	if month == "February" && day > 28 {
-		return errInvalidDayFeb
 	}
 
 	date = date + strings.TrimSuffix(splitDate[1], ",")
