@@ -3,12 +3,14 @@ package main
 import (
 	"database/sql"
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/ksbeasle/GoLang/api"
 	"github.com/ksbeasle/GoLang/db/mysql"
 )
 
-/* Application struct - will hold our custom loggers and a db */
+/* application struct - will hold our custom loggers and a db */
 type application struct {
 	infoLog  *log.Logger
 	errorLog *log.Logger
@@ -24,6 +26,20 @@ func main() {
 	DB, err := startDB()
 	if err != nil {
 		errorLog.Fatal(err)
+	}
+
+	/* Create a new application struct */
+	app := &application{
+		infoLog:  infoLog,
+		errorLog: errorLog,
+		db:       &mysql.DBModel{DB: DB},
+		//gonna check something here later -- db:       DB,
+	}
+
+	/* server struct */
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: api.Routes(),
 	}
 }
 
