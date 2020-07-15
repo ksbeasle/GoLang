@@ -13,7 +13,7 @@ type Game struct {
 	Title       string
 	Description string
 	ReleaseDate string
-	Platform    []string
-	Genre       []string
+	Platform    string
+	Genre       string
 	Rating      int
 }
