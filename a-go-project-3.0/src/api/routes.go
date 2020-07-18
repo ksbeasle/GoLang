@@ -9,5 +9,9 @@ import (
 /* Routes - Uses gorilla mux */
 func Routes() http.Handler {
 	r := mux.NewRouter()
-	r.HandleFunc("/", Home)
+	r.HandleFunc("/", Home).Methods("GET")
+	r.HandleFunc("/game/{id}", GetGame).Methods("GET")
+	r.HandleFunc("/game/add", AddGame).Methods("POST")
+
+	return r
 }
