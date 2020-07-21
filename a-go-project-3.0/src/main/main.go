@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -23,11 +22,11 @@ func main() {
 	errorLog := log.New(os.Stdout, "error: ", log.Lshortfile)
 
 	/* Start a Connection to the Database - mysql */
-	DB, err := startDB()
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-	defer DB.Close()
+	// DB, err := startDB()
+	// if err != nil {
+	// 	errorLog.Fatal(err)
+	// }
+	//defer DB.Close()
 	// /* Create a new application struct */
 	// app := &application{
 	// 	infoLog:  infoLog,
@@ -43,23 +42,8 @@ func main() {
 	}
 
 	infoLog.Println("STARTING SERVER AT PORT ... ", server.Addr)
-	err = server.ListenAndServe()
+	err := server.ListenAndServe()
 	if err != nil {
 		errorLog.Fatal(err)
 	}
-}
-
-/* startDB - Connect to the mysql database, return the db if successful else an error */
-func startDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "web3:pass@tcp(localhost:3306)/videogames3")
-	if err != nil {
-		return nil, err
-	}
-
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-	log.Println("CONNCETION TO DATABASE SUCCESSFUL")
-	return db, nil
 }

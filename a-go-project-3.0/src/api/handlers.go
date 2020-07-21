@@ -2,27 +2,33 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/ksbeasle/GoLang/db/mysql"
 )
 
-/* Home -  */
+/* Home -  This will make a call to the DB to get all the Games*/
 func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "home")
 }
 
-/* GetGame - */
+/* GetGame - This will get one game based on the ID passed in else return errNoGameFound */
 func GetGame(w http.ResponseWriter, r *http.Request) {
-	g, err := mysql.Get(0)
+	// gorilla or regular?? --- id := mux.Vars(r)["id"]
+	g, err := mysql.Get(1)
 	if err != nil {
-		log.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "Error: %s ", err)
 	}
 	fmt.Fprintf(w, "", g)
 }
 
 /* AddGame - */
 func AddGame(w http.ResponseWriter, r *http.Request) {
+
+}
+
+/* DeleteGame - */
+func DeleteGame(w http.ResponseWriter, r *http.Request) {
 
 }

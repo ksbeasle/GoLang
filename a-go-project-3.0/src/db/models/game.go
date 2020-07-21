@@ -5,9 +5,10 @@ import (
 	"time"
 )
 
-//Error - No game found
-var errNoGameFound = errors.New("no game found")
+//ErrNoGameFound - error if no game is found when checking DB
+var ErrNoGameFound = errors.New("no game found")
 
+//Game -
 type Game struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
