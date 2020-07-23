@@ -2,9 +2,12 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
-	"github.com/ksbeasle/GoLang/db/mysql"
+	"github.com/gorilla/mux"
+	"github.com/ksbeasle/GoLang/database"
 )
 
 /* Home -  This will make a call to the DB to get all the Games*/
@@ -14,13 +17,18 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 /* GetGame - This will get one game based on the ID passed in else return errNoGameFound */
 func GetGame(w http.ResponseWriter, r *http.Request) {
-	// gorilla or regular?? --- id := mux.Vars(r)["id"]
-	g, err := mysql.Get(1)
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Println(err)
+		fmt.Fprintf(w, "error: ", err)
+	}
+	g, err := database.Get(id)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "Error: %s ", err)
 	}
-	fmt.Fprintf(w, "", g)
+	fmt.Fprintf(w, "GAMe: ", g)
 }
 
 /* AddGame - */

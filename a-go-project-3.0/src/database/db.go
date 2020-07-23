@@ -1,16 +1,20 @@
-package mysql
+package database
 
 import (
 	"database/sql"
 	"errors"
 	"log"
 
-	"github.com/ksbeasle/GoLang/db/models"
+	"github.com/ksbeasle/GoLang/database/models"
 )
 
+type GameDB struct {
+	GameDB *sql.DB
+}
+
 /*startDB - Connect to the mysql database, return the db if successful else an error */
-func startDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "web3:pass@tcp(localhost:3306)/videogames3")
+func StartDB() (*sql.DB, error) {
+	db, err := sql.Open("mysql", "web3:pass@tcp(localhost:3306)/videogames3?parseTime=true")
 	if err != nil {
 		return nil, err
 	}
@@ -23,36 +27,33 @@ func startDB() (*sql.DB, error) {
 	return db, nil
 }
 
+//func All()
+
 /*Get - Will get a specific game based on the id else return an error */
-func Get(id int) (*models.Game, error) {
+func (g *GameDB) Get(id int) (*models.Game, error) {
 	//connect to db
-	db, err := startDB()
+	//db, err := StartDB()
 	if err != nil {
 		log.Println("Unable to connect to DB: ", err)
 		return nil, err
 	}
 
 	//close db
-	defer db.Close()
+	//defer db.Close()
 
 	//query statement
-	/*
-		`SELECT title, description, releaseDate, platform, genre, rating
-				FROM games
-			 	WHERE id=?`
-	*/
-	stmt := `SELECT title, description, platform, genre, rating
-			FROM games
-		 	WHERE id=?`
+	stmt := `SELECT title, description, releaseDate, platform, genre, rating
+			 FROM games
+			 WHERE id=?`
 
 	//execute statement
-	row := db.QueryRow(stmt, id)
+	row := g.QueryRow(stmt, id)
 
 	//game to hold the values from the query
-	g := &models.Game{}
+	game := &models.Game{}
 
 	//scan the values into g
-	err = row.Scan(&g.Title, &g.Description, &g.Platform, &g.Genre, &g.Rating)
+	err = row.Scan(&game.Title, &game.Description, &game.ReleaseDate, &game.Platform, &game.Genre, &game.Rating)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -62,7 +63,7 @@ func Get(id int) (*models.Game, error) {
 		}
 	}
 
-	return g, nil
+	return game, nil
 }
 
 /*Insert - */

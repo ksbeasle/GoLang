@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ksbeasle/GoLang/api"
+	"github.com/ksbeasle/GoLang/database"
 )
 
 /* application struct - will hold our custom loggers and a db */
@@ -22,7 +23,9 @@ func main() {
 	errorLog := log.New(os.Stdout, "error: ", log.Lshortfile)
 
 	/* Start a Connection to the Database - mysql */
-	// DB, err := startDB()
+	DB, err := database.StartDB()
+	log.Println(DB)
+
 	// if err != nil {
 	// 	errorLog.Fatal(err)
 	// }
@@ -42,7 +45,7 @@ func main() {
 	}
 
 	infoLog.Println("STARTING SERVER AT PORT ... ", server.Addr)
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil {
 		errorLog.Fatal(err)
 	}
