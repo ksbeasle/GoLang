@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/ksbeasle/GoLang/database"
+	"github.com/ksbeasle/GoLang/application"
 )
 
 /* Home -  This will make a call to the DB to get all the Games*/
@@ -23,12 +23,14 @@ func GetGame(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		fmt.Fprintf(w, "error: ", err)
 	}
-	g, err := database.Get(id)
+	app := &application.App{}
+	log.Println(app)
+	//g, err :=
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "Error: %s ", err)
 	}
-	fmt.Fprintf(w, "GAMe: ", g)
+	fmt.Fprintf(w, "GAMe: ", id)
 }
 
 /* AddGame - */

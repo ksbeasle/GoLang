@@ -7,8 +7,8 @@ import (
 	"github.com/ksbeasle/GoLang/database"
 )
 
-type app struct {
-	GameDB *database.GameDB
+type App struct {
+	DBMODEL *database.GameDB
 }
 
 /*startDB - Connect to the mysql database, return the db if successful else an error */

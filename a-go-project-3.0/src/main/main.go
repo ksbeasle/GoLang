@@ -1,21 +1,28 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ksbeasle/GoLang/api"
 	"github.com/ksbeasle/GoLang/application"
+	"github.com/ksbeasle/GoLang/database"
 )
 
 func main() {
 
 	/* Start a Connection to the Database - mysql */
-	DB, err := application.StartDB()
-	app := &application.app{
-		GameDB: DB,
+	db, err := application.StartDB()
+	if err != nil {
+		log.Fatal(err)
 	}
-	defer DB.Close()
+
+	app := &application.App{
+		DBMODEL: &database.GameDB{DB: db},
+	}
+	log.Println(app)
+	defer db.Close()
 
 	// if err != nil {
 	// 	errorLog.Fatal(err)
@@ -35,9 +42,9 @@ func main() {
 		Handler: api.Routes(),
 	}
 
-	infoLog.Println("STARTING SERVER AT PORT ... ", server.Addr)
+	log.Println("STARTING SERVER AT PORT ... ", server.Addr)
 	err = server.ListenAndServe()
 	if err != nil {
-		errorLog.Fatal(err)
+		log.Fatal(err)
 	}
 }
